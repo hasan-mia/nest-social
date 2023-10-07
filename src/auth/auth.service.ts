@@ -84,7 +84,7 @@ export class AuthService {
       throw new ForbiddenException('Could not signin');
     }
 
-    res.cookie('userToken', token, {});
+    res.cookie('token', token, {});
 
     return res.send({ message: 'Signin succefully' });
   }
@@ -93,7 +93,7 @@ export class AuthService {
   //    Sign Out    //
   //=================
   async signout(req: Request, res: Response) {
-    res.clearCookie('userToken');
+    res.clearCookie('token');
     return res.send({ message: 'Signout succefully' });
   }
 
