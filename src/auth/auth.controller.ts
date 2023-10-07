@@ -1,6 +1,15 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Request,
+  Response,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
+import { ResetDto } from './dto/reset.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -12,17 +21,22 @@ export class AuthController {
   }
 
   @Post('signin')
-  signin() {
-    return this.authService.signin();
+  signin(@Body() dto: AuthDto, @Request() req, @Response() res) {
+    return this.authService.signin(dto, req, res);
   }
 
   @Get('signout')
-  signout() {
-    return this.authService.signout();
+  signout(@Request() req, @Response() res) {
+    return this.authService.signout(req, res);
   }
 
-  @Get('reset')
-  reset() {
-    return this.authService.reset();
+  @Post('reset')
+  resetToken(@Body() dto: ResetDto, @Request() req, @Response() res) {
+    return this.authService.resetToken(dto, req, res);
+  }
+
+  @Put('reset/password')
+  resetPass(@Body() dto: AuthDto, @Request() req, @Response() res) {
+    return this.authService.resetPass(dto, req, res);
   }
 }
