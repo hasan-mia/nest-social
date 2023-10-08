@@ -8,7 +8,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  getUser(@Param() params: { id: string }, @Req() req) {
+  getUser(@Param() params: { id: number }, @Req() req) {
     return this.usersService.getUser(params.id, req);
   }
 
@@ -19,7 +19,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
-  deleteUser(@Param() params: { id: string }, @Req() req) {
+  deleteUser(@Param() params: { id: number }, @Req() req) {
     return this.usersService.deleteUser(params.id, req);
   }
 }

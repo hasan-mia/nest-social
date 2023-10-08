@@ -11,7 +11,7 @@ import { PrismaService } from 'prisma/prisma.service';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async getUser(id: string, req: Request) {
+  async getUser(id: number, req: Request) {
     const decodedUserInfo = (req as any).user;
     const foundUser = await this.prisma.user.findUnique({ where: { id: +id } });
 
@@ -36,7 +36,7 @@ export class UsersService {
     return { users };
   }
 
-  async deleteUser(id: string, req: Request) {
+  async deleteUser(id: number, req: Request) {
     const decodedUserInfo = (req as any).user;
     const foundUser = await this.prisma.user.findUnique({ where: { id: +id } });
 
