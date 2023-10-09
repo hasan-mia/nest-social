@@ -9,42 +9,46 @@ export class PostsService {
   constructor(private prisma: PrismaService) {}
   async createPost(
     dto: PostDto,
-    images: Express.Multer.File[],
+    imageUrls: string[],
     req: Request,
     res: Response,
   ) {
     const { userId, content } = dto;
 
-    const foundUser = await this.prisma.user.findUnique({
-      where: { id: +userId },
-    });
+    try {
+      // Check if the user exists
+      const foundUser = await this.prisma.user.findUnique({
+        where: { id: +userId },
+      });
 
-    if (!foundUser) {
-      throw new NotFoundException('User not found');
+      if (!foundUser) {
+        throw new NotFoundException('User not found');
+      }
+
+      // Create the post and associate images
+      const createdPost = await this.prisma.post.create({
+        data: {
+          content,
+          userId: +userId,
+          images: {
+            createMany: {
+              data: imageUrls.map((imageUrl) => ({ imageUrl })),
+            },
+          },
+        },
+        include: {
+          images: true,
+        },
+      });
+
+      return res.status(201).json({
+        message: 'Post created successfully',
+        data: createdPost,
+      });
+    } catch (error) {
+      console.error('Error creating post:', error);
+      return res.status(500).json({ message: 'Internal server error' });
     }
-
-    // const domain = 'http://localhost:5000';
-    // const imageUrls = images?.map(
-    //   (image) => `${domain}/upload/images/${image.filename}`,
-    // );
-    return res.send({
-      message: 'Images uploaded successfully',
-    });
-
-    // Create the post and associate images
-    // const createdPost = await this.prisma.post.create({
-    //   data: {
-    //     content,
-    //     userId: +userId,
-    //     images: {
-    //       createMany: {
-    //         data: imageUrls.map((imageUrl) => ({ imageUrl })),
-    //       },
-    //     },
-    //   },
-    // });
-
-    // return res.status(201).send({ message: 'create post successfull', data });
   }
 
   // update post

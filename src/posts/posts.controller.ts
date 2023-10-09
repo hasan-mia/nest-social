@@ -8,12 +8,11 @@ import {
   Put,
   Request,
   Response,
-  UploadedFile,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { multerOptions } from 'src/multer/multer.provider';
 import { PostDto } from './dto/post.dto';
@@ -26,14 +25,18 @@ export class PostsController {
   // create post
   @UseGuards(JwtAuthGuard)
   @Post('create')
-  @UseInterceptors(FileInterceptor('images', multerOptions))
+  @UseInterceptors(FilesInterceptor('images', 10, multerOptions))
   createPost(
     @Body() dto: PostDto,
-    @UploadedFile() images: Express.Multer.File[],
+    @UploadedFiles() images: Express.Multer.File[],
     @Request() req,
     @Response() res,
   ) {
-    return this.postsService.createPost(dto, images, req, res);
+    // handle multiple image upload
+    const imageUrls = images.map((image) => {
+      return `${process.env.DOMAIN}/upload/images/${image.filename}`;
+    });
+    return this.postsService.createPost(dto, imageUrls, req, res);
   }
   // update post
   @Put('update')
