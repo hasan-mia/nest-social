@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { MulterConfigModule } from './multer/multer.module';
 import { PostsModule } from './posts/posts.module';
+import { ReactionsModule } from './reactions/reactions.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -16,6 +17,7 @@ import { UsersModule } from './users/users.module';
     MulterModule,
     MulterConfigModule,
     PostsModule,
+    ReactionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -56,6 +56,9 @@ DATABASE_URL="mysql://root:@localhost:3306/your_db_name"
 ## Prisma setup
 
 ```bash
+# check prisma model is correct
+$ npx prisma format
+
 # initialize prisma
 $ npx prisma init
 
