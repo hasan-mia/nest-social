@@ -5,9 +5,10 @@ import { ReactionDto } from './dto/reaction.dto';
 @Injectable()
 export class ReactionsService {
   constructor(private readonly prisma: PrismaService) {}
-  // post reaction
+
+  // ============post reaction==========
   async postReaction(dto: ReactionDto) {
-    const { postId, reactionType } = dto;
+    const { postId, userId, reactionType } = dto;
     const post = await this.prisma.post.findUnique({
       where: { id: postId },
     });
@@ -15,11 +16,10 @@ export class ReactionsService {
     if (!post) {
       throw new NotFoundException(`Post with ID ${postId} not found`);
     }
-
+    // Assuming the user can only react once
     const existingReaction = await this.prisma.reaction.findFirst({
-      where: { postId, userId: post.userId }, // Assuming the user can only react once
+      where: { userId: userId, postId: postId },
     });
-
     if (existingReaction) {
       // If the user has already reacted, update the existing reaction
       await this.prisma.reaction.update({
@@ -34,37 +34,62 @@ export class ReactionsService {
         data: {
           reactionType,
           postId,
-          userId: post.userId,
+          userId: userId,
         },
       });
     }
-
-    // Retrieve all reactions for the post and update the reactions field
-    // const reactions = await this.prisma.reaction.findMany({
-    //   where: { postId },
-    //   select: {
-    //     reactionType: true,
-    //   },
-    // });
-
-    // const updatedReactions = reactions.map((r) => r.reactionType);
-
-    // // Update the reactions field in the Post model
-    // await this.prisma.post.update({
-    //   where: { id: postId },
-    //   data: {
-    //     reactions: updatedReactions,
-    //   },
-    // });
-
+    // return all reaction of that posts
     return this.prisma.post.findUnique({
       where: { id: postId },
+      include: {
+        reactions: true,
+      },
     });
   }
 
-  // comment reply reaction
+  // ============comment reaction==========
   async commentReaction(dto: ReactionDto) {
-    const { commentId } = dto;
-    return commentId;
+    const { postId, commentId, userId, reactionType } = dto;
+    const comment = await this.prisma.comment.findFirst({
+      where: {
+        postId: postId,
+        id: commentId,
+      },
+    });
+
+    if (!comment) {
+      throw new NotFoundException(`Post with ID ${commentId} not found`);
+    }
+    // Assuming the user can only react once
+    const existingReaction = await this.prisma.reaction.findFirst({
+      where: { userId: userId, postId: postId, commentId: commentId },
+    });
+    if (existingReaction) {
+      // If the user has already reacted, update the existing reaction
+      await this.prisma.reaction.update({
+        where: { id: existingReaction.id },
+        data: {
+          reactionType,
+        },
+      });
+    } else {
+      // If the user hasn't reacted before, create a new reaction
+      await this.prisma.reaction.create({
+        data: {
+          reactionType,
+          postId,
+          commentId,
+          userId: userId,
+        },
+      });
+    }
+    // return all reaction of that posts
+    return this.prisma.post.findUnique({
+      where: { id: postId },
+      include: {
+        reactions: true,
+      },
+    });
+    return { commentId, userId, reactionType };
   }
 }

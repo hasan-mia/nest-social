@@ -63,6 +63,17 @@ export class PostsService {
 
   // get all post
   async getPosts() {
+    const posts = await this.prisma.post.findMany({
+      include: {
+        images: true,
+        author: true,
+        reactions: true,
+        comments: true,
+        notifications: true,
+      },
+    });
+
+    return { data: posts };
     return 'get all post';
   }
 

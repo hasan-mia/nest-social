@@ -2,7 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ReactionDto } from './dto/reaction.dto';
 import { ReactionsService } from './reactions.service';
 
-@Controller('reactions')
+@Controller('reaction')
 export class ReactionsController {
   constructor(private readonly reactionsService: ReactionsService) {}
   // post reaction
