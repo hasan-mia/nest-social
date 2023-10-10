@@ -7,6 +7,8 @@ import { PostDto } from './dto/post.dto';
 @Injectable()
 export class PostsService {
   constructor(private prisma: PrismaService) {}
+
+  // ========create feed post=========
   async createPost(
     dto: PostDto,
     imageUrls: string[],
@@ -46,38 +48,71 @@ export class PostsService {
         data: createdPost,
       });
     } catch (error) {
-      console.error('Error creating post:', error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', error });
     }
   }
 
-  // update post
+  // ========update feed post=========
   async updatePost(dto: PostDto) {
     return { data: dto };
   }
 
-  // delete post
+  // ========delete feed post=========
   async deletePost(id: number) {
     return { id };
   }
 
-  // get all post
+  // ========all feed post=========
   async getPosts() {
-    const posts = await this.prisma.post.findMany({
-      include: {
-        images: true,
-        author: true,
-        reactions: true,
-        comments: true,
-        notifications: true,
-      },
-    });
+    try {
+      const posts = await this.prisma.post.findMany({
+        include: {
+          images: true,
+          author: {
+            select: {
+              id: true,
+              username: true,
+              email: true,
+            },
+          },
+          reactions: true,
+          comments: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  email: true,
+                },
+              },
+              reactions: true,
+              replies: {
+                include: {
+                  user: {
+                    select: {
+                      id: true,
+                      username: true,
+                      email: true,
+                    },
+                  },
+                  reactions: true,
+                  notifications: true,
+                },
+              },
+              notifications: true,
+            },
+          },
+          notifications: true,
+        },
+      });
 
-    return { data: posts };
-    return 'get all post';
+      return { data: posts };
+    } catch (error) {
+      return error;
+    }
   }
 
-  // get a post
+  // ========single post=========
   async getPost(id: number) {
     return { id };
   }

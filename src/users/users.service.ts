@@ -11,6 +11,7 @@ import { PrismaService } from 'prisma/prisma.service';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
+  //========= get user by id ==========//
   async getUser(id: number, req: Request) {
     const decodedUserInfo = (req as any).user;
     const foundUser = await this.prisma.user.findUnique({ where: { id: +id } });
@@ -28,6 +29,7 @@ export class UsersService {
     return { user: foundUser };
   }
 
+  //========= get all user ==========//
   async getUsers() {
     const users = await this.prisma.user.findMany({
       select: { id: true, email: true },
@@ -36,6 +38,7 @@ export class UsersService {
     return { users };
   }
 
+  //========= delete by id ==========//
   async deleteUser(id: number, req: Request) {
     const decodedUserInfo = (req as any).user;
     const foundUser = await this.prisma.user.findUnique({ where: { id: +id } });

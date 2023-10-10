@@ -15,6 +15,7 @@ import {
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { multerOptions } from 'src/multer/multer.provider';
+import { domain } from 'utils/constants';
 import { PostDto } from './dto/post.dto';
 import { PostsService } from './posts.service';
 
@@ -22,7 +23,7 @@ import { PostsService } from './posts.service';
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  // create post
+  //========= create post ==========//
   @UseGuards(JwtAuthGuard)
   @Post('create')
   @UseInterceptors(FilesInterceptor('images', 10, multerOptions))
@@ -32,35 +33,35 @@ export class PostsController {
     @Request() req,
     @Response() res,
   ) {
-    // handle multiple image upload
+    //========= handle multiple image upload ==========//
     const imageUrls = images.map((image) => {
-      return `${process.env.DOMAIN}/upload/images/${image.filename}`;
+      return `${domain}/upload/images/${image.filename}`;
     });
     return this.postsService.createPost(dto, imageUrls, req, res);
   }
-  // update post
+  //========= update post ==========//
   @Put('update')
   updatePost(@Body() dto: PostDto) {
     return this.postsService.updatePost(dto);
   }
-  // update post
+  //========= update post ==========//
   @Delete('delete/:id')
   deletePost(@Param() params: { id: number }) {
     return this.postsService.deletePost(params.id);
   }
 
-  // get all post
+  //========= get all post ==========//
   @Get('all')
   getPosts() {
     return this.postsService.getPosts();
   }
 
-  // get a post
+  //========= get a post ==========//
   @Get(':id')
   getPost(@Param() params: { id: number }) {
     return this.postsService.getPost(params.id);
   }
-  // image uploads
+  //========= image uploads ==========//
   @UseGuards(JwtAuthGuard)
   @Post('upload')
   @UseInterceptors(FileInterceptor('images', multerOptions))
