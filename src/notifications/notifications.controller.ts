@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { NotificationDto } from './dto/notification.dto';
 import { NotificationsService } from './notifications.service';
@@ -6,22 +14,24 @@ import { NotificationsService } from './notifications.service';
 @Controller('notification')
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
-  //========= create reply ==========//
+  //========= create notification ==========//
   @UseGuards(JwtAuthGuard)
   @Post('create')
   crateReply(@Body() dto: NotificationDto) {
-    return this.notificationsService.crateReply(dto);
+    return this.notificationsService.createNotification(dto);
   }
-  //========= update reply ==========//
+
+  //========= get user notification ==========//
   @UseGuards(JwtAuthGuard)
-  @Get('update')
-  updateReply(@Body() dto: NotificationDto) {
-    return this.notificationsService.updateReply(dto);
+  @Get(':userId')
+  async getNotification(@Param('userId') userId: number) {
+    return this.notificationsService.getNotification(userId);
   }
-  //========= delete reply ==========//
+
+  //========= read notification ==========//
   @UseGuards(JwtAuthGuard)
-  @Post('delete')
-  deleteReply(@Body() dto: NotificationDto) {
-    return this.notificationsService.deleteReply(dto);
+  @Put('notificationId/read')
+  markNotificationAsRead(@Param('notificationId') notificationId: number) {
+    return this.notificationsService.markNotificationAsRead(notificationId);
   }
 }

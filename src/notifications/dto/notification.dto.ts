@@ -5,15 +5,19 @@ export class NotificationDto {
   @IsNotEmpty()
   userId: number;
 
+  @IsOptional()
   @IsInt()
-  @IsNotEmpty()
   postId: number;
 
+  @IsOptional()
   @IsInt()
-  @IsNotEmpty()
   commentId: number;
 
   @IsOptional()
+  @IsInt()
+  replyId: number;
+
+  @IsOptional()
   @IsString()
-  content?: string;
+  notificationType?: string;
 }
