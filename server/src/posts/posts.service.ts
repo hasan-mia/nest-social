@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { PrismaService } from 'prisma/prisma.service';
+import { domain } from 'utils/constants';
 import { PostDto } from './dto/post.dto';
 
 @Injectable()
@@ -181,51 +182,70 @@ export class PostsService {
   }
 
   // ========all feed post=========
-  async getPosts() {
-    try {
-      const posts = await this.prisma.post.findMany({
-        include: {
-          images: true,
-          author: {
-            select: {
-              id: true,
-              username: true,
-              email: true,
-            },
-          },
-          reactions: true,
-          comments: {
-            include: {
-              user: {
-                select: {
-                  id: true,
-                  username: true,
-                  email: true,
-                },
-              },
-              reactions: true,
-              replies: {
-                include: {
-                  user: {
-                    select: {
-                      id: true,
-                      username: true,
-                      email: true,
-                    },
-                  },
-                  reactions: true,
-                  notifications: true,
-                },
-              },
-              notifications: true,
-            },
-          },
-          notifications: true,
-        },
-      });
+  async getPosts(page: number, limit: number) {
+    const currentPage = page || 1;
+    const perPage = limit || 2;
+    const skip = (currentPage - 1) * perPage;
 
+    try {
+      const [posts, totalPosts] = await Promise.all([
+        await this.prisma.post.findMany({
+          skip,
+          take: perPage,
+          include: {
+            images: true,
+            author: {
+              select: {
+                id: true,
+                username: true,
+                email: true,
+              },
+            },
+            reactions: true,
+            comments: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    username: true,
+                    email: true,
+                  },
+                },
+                reactions: true,
+                replies: {
+                  include: {
+                    user: {
+                      select: {
+                        id: true,
+                        username: true,
+                        email: true,
+                      },
+                    },
+                    reactions: true,
+                    notifications: true,
+                  },
+                },
+                notifications: true,
+              },
+            },
+            notifications: true,
+          },
+        }),
+        this.prisma.post.count(),
+      ]);
+
+      const totalPages = Math.ceil(totalPosts / perPage);
+      const nextPage =
+        currentPage < totalPages
+          ? `${domain}/post/all?page=${currentPage + 1}&limit=${perPage}`
+          : null;
       return {
         message: 'posts found',
+        total: totalPosts,
+        perPage,
+        currentPage,
+        totalPages,
+        nextPage,
         data: posts,
       };
     } catch (error) {

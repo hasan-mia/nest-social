@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Request,
   Response,
   UploadedFiles,
@@ -64,8 +65,8 @@ export class PostsController {
 
   //========= get all post ==========//
   @Get('all')
-  getPosts() {
-    return this.postsService.getPosts();
+  getPosts(@Query('page') page: number, @Query('limit') limit: number) {
+    return this.postsService.getPosts(page, limit);
   }
 
   //========= get a post ==========//
