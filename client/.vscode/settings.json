@@ -7,7 +7,7 @@
 	"editor.formatOnSave": true,
 	"[javascript]": {
 		"editor.formatOnSave": false,
-		"editor.defaultFormatter": null
+		"editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
 	},
 	"[javascriptreact]": {
 		"editor.formatOnSave": false,
@@ -24,5 +24,8 @@
 	"emmet.triggerExpansionOnTab": true,
 	"emmet.includeLanguages": {
 		"javascript": "javascriptreact"
+	},
+	"[css]": {
+		"editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
 	}
 }
