@@ -69,16 +69,16 @@ export class PostsService {
     const { userId, content } = dto;
 
     const decodedUserInfo = (req as any).user;
+    if (+id !== +decodedUserInfo.id) {
+      throw new ForbiddenException('you can update only your post');
+    }
+
     const foundUser = await this.prisma.user.findUnique({
       where: { id: +userId },
     });
 
     if (!foundUser) {
       throw new NotFoundException('User not found');
-    }
-
-    if (foundUser.id !== +decodedUserInfo.id) {
-      throw new ForbiddenException();
     }
 
     try {
@@ -144,7 +144,8 @@ export class PostsService {
   }
 
   // ========delete feed post=========
-  async deletePost(id: number) {
+  async deletePost(id: number, req: Request) {
+    const decodedUserInfo = (req as any).user;
     try {
       const post = await this.prisma.post.findUnique({
         where: { id: +id },
@@ -155,6 +156,9 @@ export class PostsService {
         throw new NotFoundException('Post not found');
       }
 
+      if (post.userId !== +decodedUserInfo.id) {
+        throw new ForbiddenException('you can not delete it');
+      }
       // find related images
       const existingImages = await this.prisma.image.findMany({
         where: {

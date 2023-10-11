@@ -40,7 +40,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Put('reset/password')
-  resetPass(@Body() dto: AuthDto, @Request() req, @Response() res) {
+  resetPass(@Body() dto: ResetDto, @Request() req, @Response() res) {
     return this.authService.resetPass(dto, req, res);
   }
 }

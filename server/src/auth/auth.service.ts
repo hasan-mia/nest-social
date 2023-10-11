@@ -98,6 +98,34 @@ export class AuthService {
   }
 
   // ================
+  //  Reset Pass  //
+  //=================
+  async resetPass(dto: ResetDto, req: Request, res: Response) {
+    const { password, email, id } = dto;
+    // generate hash password
+    try {
+      const userExists = await this.prisma.user.findUnique({
+        where: { email, id: +id },
+      });
+      if (userExists) {
+        const updatePassword = await this.hashPassword(password);
+        await this.prisma.user.update({
+          where: {
+            email: email,
+          },
+          data: {
+            password: updatePassword,
+          },
+        });
+        return res.send({ message: 'Update password successfully' });
+      }
+      return res.send({ message: 'User Not Found' });
+    } catch (error) {
+      return { error };
+    }
+  }
+
+  // ================
   //  Reset Token  //
   //=================
   async resetToken(dto: ResetDto, req: Request, res: Response) {
@@ -141,30 +169,6 @@ export class AuthService {
     // }
 
     return res.send({ message: resetPasswordLink });
-  }
-
-  // ================
-  //  Reset Pass  //
-  //=================
-  async resetPass(dto: AuthDto, req: Request, res: Response) {
-    const { password, email } = dto;
-    // generate hash password
-    const userExists = await this.prisma.user.findUnique({
-      where: { email },
-    });
-    if (userExists) {
-      const updatePassword = await this.hashPassword(password);
-      await this.prisma.user.update({
-        where: {
-          email: email,
-        },
-        data: {
-          password: updatePassword,
-        },
-      });
-      return res.send({ message: 'Update password successfully' });
-    }
-    return res.send({ message: 'User Not Found' });
   }
 
   // =================

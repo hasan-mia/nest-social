@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   Request,
   Response,
   UploadedFiles,
@@ -59,8 +60,8 @@ export class PostsController {
   //========= update post ==========//
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
-  deletePost(@Param() params: { id: number }) {
-    return this.postsService.deletePost(params.id);
+  deletePost(@Param() params: { id: number }, @Req() req) {
+    return this.postsService.deletePost(params.id, req);
   }
 
   //========= get all post ==========//
