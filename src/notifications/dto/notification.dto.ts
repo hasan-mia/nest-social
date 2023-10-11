@@ -1,4 +1,11 @@
-import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class NotificationDto {
   @IsInt()
@@ -19,5 +26,18 @@ export class NotificationDto {
 
   @IsOptional()
   @IsString()
+  @IsIn([
+    'new_post',
+    'new_comment',
+    'new_reply',
+    'post_like',
+    'friend_request',
+    'new_message',
+    'mention',
+  ])
   notificationType?: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  isRead: boolean;
 }

@@ -26,7 +26,7 @@ export class PostsController {
   //========= create post ==========//
   @UseGuards(JwtAuthGuard)
   @Post('create')
-  @UseInterceptors(FilesInterceptor('images', 10, multerOptions))
+  @UseInterceptors(FilesInterceptor('images', 4, multerOptions))
   createPost(
     @Body() dto: PostDto,
     @UploadedFiles() images: Express.Multer.File[],
@@ -40,11 +40,23 @@ export class PostsController {
     return this.postsService.createPost(dto, imageUrls, req, res);
   }
   //========= update post ==========//
-  @Put('update')
-  updatePost(@Body() dto: PostDto) {
-    return this.postsService.updatePost(dto);
+  @UseGuards(JwtAuthGuard)
+  @Put('update/:id')
+  @UseInterceptors(FilesInterceptor('images', 4, multerOptions))
+  updatePost(
+    @Param() params: { id: number },
+    @Body() dto: PostDto,
+    @UploadedFiles() images: Express.Multer.File[],
+    @Request() req,
+    @Response() res,
+  ) {
+    const imageUrls = images.map((image) => {
+      return `${domain}/upload/images/${image.filename}`;
+    });
+    return this.postsService.updatePost(params.id, dto, imageUrls, req, res);
   }
   //========= update post ==========//
+  @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
   deletePost(@Param() params: { id: number }) {
     return this.postsService.deletePost(params.id);

@@ -7,10 +7,11 @@ export class NotificationsService {
   constructor(private readonly prisma: PrismaService) {}
   //========= create notification ==========//
   async createNotification(dto: NotificationDto) {
-    const { notificationType, userId, postId, commentId, replyId } = dto;
+    const { notificationType, userId, postId, commentId, replyId, isRead } =
+      dto;
     try {
       const notifications = await this.prisma.notification.create({
-        data: { notificationType, userId, postId, commentId, replyId },
+        data: { notificationType, userId, postId, commentId, replyId, isRead },
       });
       return notifications;
     } catch (error) {
@@ -35,12 +36,15 @@ export class NotificationsService {
   //========= read notification ==========//
   async markNotificationAsRead(notificationId: number) {
     try {
-      const updateNotification = await this.prisma.notification.findMany({
+      const updatedNotification = await this.prisma.notification.update({
         where: {
-          id: +notificationId,
+          id: notificationId,
+        },
+        data: {
+          isRead: true,
         },
       });
-      return updateNotification;
+      return updatedNotification;
     } catch (error) {
       return error;
     }

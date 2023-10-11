@@ -20,7 +20,7 @@ export class ReactionsController {
   }
   //========= comment reply reaction ==========//
   @UseGuards(JwtAuthGuard)
-  @Post('comment')
+  @Post('reply')
   replyReaction(@Body() dto: ReactionDto) {
     return this.reactionsService.replyReaction(dto);
   }

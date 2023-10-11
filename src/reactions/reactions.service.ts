@@ -50,6 +50,33 @@ export class ReactionsService {
         where: { id: postId },
         include: {
           reactions: true,
+          comments: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  email: true,
+                },
+              },
+              reactions: true,
+              replies: {
+                include: {
+                  user: {
+                    select: {
+                      id: true,
+                      username: true,
+                      email: true,
+                    },
+                  },
+                  reactions: true,
+                  notifications: true,
+                },
+              },
+              notifications: true,
+            },
+          },
+          notifications: true,
         },
       });
     } catch (error) {
@@ -59,48 +86,74 @@ export class ReactionsService {
 
   // ============comment reaction==========//
   async commentReaction(dto: ReactionDto) {
-    return dto;
+    const { postId, commentId, userId, reactionType } = dto;
     try {
-      // const { postId, commentId, userId, reactionType } = dto;
-      // const comment = await this.prisma.comment.findFirst({
-      //   where: {
-      //     postId: postId,
-      //     id: commentId,
-      //   },
-      // });
-      // if (!comment) {
-      //   throw new NotFoundException(`Post with ID ${commentId} not found`);
-      // }
-      // // Assuming the user can only react once
-      // const existingReaction = await this.prisma.reaction.findFirst({
-      //   where: { userId: userId, postId: postId, commentId: commentId },
-      // });
-      // if (existingReaction) {
-      //   // If the user has already reacted, update the existing reaction
-      //   await this.prisma.reaction.update({
-      //     where: { id: existingReaction.id },
-      //     data: {
-      //       reactionType,
-      //     },
-      //   });
-      // } else {
-      //   // If the user hasn't reacted before, create a new reaction
-      //   await this.prisma.reaction.create({
-      //     data: {
-      //       reactionType,
-      //       postId,
-      //       commentId,
-      //       userId: userId,
-      //     },
-      //   });
-      // }
-      // // return all reaction of that posts
-      // return this.prisma.post.findUnique({
-      //   where: { id: postId },
-      //   include: {
-      //     reactions: true,
-      //   },
-      // });
+      const comment = await this.prisma.comment.findFirst({
+        where: {
+          postId: postId,
+          id: commentId,
+        },
+      });
+      if (!comment) {
+        throw new NotFoundException(`Post with ID ${commentId} not found`);
+      }
+      // Assuming the user can only react once
+      const existingReaction = await this.prisma.reaction.findFirst({
+        where: { userId: +userId, postId: +postId, commentId: +commentId },
+      });
+      if (existingReaction) {
+        // If the user has already reacted, update the existing reaction
+        await this.prisma.reaction.update({
+          where: { id: existingReaction.id },
+          data: {
+            reactionType,
+          },
+        });
+      } else {
+        // If the user hasn't reacted before, create a new reaction
+        await this.prisma.reaction.create({
+          data: {
+            reactionType,
+            postId,
+            commentId,
+            userId: userId,
+          },
+        });
+      }
+      // return all reaction of that posts
+      return this.prisma.post.findUnique({
+        where: { id: postId },
+        include: {
+          reactions: true,
+          comments: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  email: true,
+                },
+              },
+              reactions: true,
+              replies: {
+                include: {
+                  user: {
+                    select: {
+                      id: true,
+                      username: true,
+                      email: true,
+                    },
+                  },
+                  reactions: true,
+                  notifications: true,
+                },
+              },
+              notifications: true,
+            },
+          },
+          notifications: true,
+        },
+      });
     } catch (error) {
       return error;
     }
@@ -108,6 +161,82 @@ export class ReactionsService {
 
   // ============reply reaction==========//
   async replyReaction(dto: ReactionDto) {
-    return dto;
+    const { postId, commentId, userId, replyId, reactionType } = dto;
+    try {
+      const comment = await this.prisma.comment.findFirst({
+        where: {
+          postId: postId,
+          id: commentId,
+        },
+      });
+      if (!comment) {
+        throw new NotFoundException(`Post with ID ${commentId} not found`);
+      }
+      // Assuming the user can only react once
+      const existingReaction = await this.prisma.reaction.findFirst({
+        where: {
+          userId: +userId,
+          postId: +postId,
+          commentId: +commentId,
+          replyId: +replyId,
+        },
+      });
+      if (existingReaction) {
+        // If the user has already reacted, update the existing reaction
+        await this.prisma.reaction.update({
+          where: { id: existingReaction.id },
+          data: {
+            reactionType,
+          },
+        });
+      } else {
+        // If the user hasn't reacted before, create a new reaction
+        await this.prisma.reaction.create({
+          data: {
+            reactionType,
+            postId,
+            commentId,
+            replyId,
+            userId: userId,
+          },
+        });
+      }
+      // return all reaction of that posts
+      return this.prisma.post.findUnique({
+        where: { id: postId },
+        include: {
+          reactions: true,
+          comments: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  email: true,
+                },
+              },
+              reactions: true,
+              replies: {
+                include: {
+                  user: {
+                    select: {
+                      id: true,
+                      username: true,
+                      email: true,
+                    },
+                  },
+                  reactions: true,
+                  notifications: true,
+                },
+              },
+              notifications: true,
+            },
+          },
+          notifications: true,
+        },
+      });
+    } catch (error) {
+      return error;
+    }
   }
 }

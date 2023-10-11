@@ -17,11 +17,11 @@ export class UsersService {
     const foundUser = await this.prisma.user.findUnique({ where: { id: +id } });
 
     if (!foundUser) {
-      throw new NotFoundException();
+      throw new NotFoundException('user not found');
     }
 
     if (foundUser.id !== +decodedUserInfo.id) {
-      throw new ForbiddenException();
+      throw new ForbiddenException('you can access only your info');
     }
 
     delete foundUser.password;
@@ -44,16 +44,16 @@ export class UsersService {
     const foundUser = await this.prisma.user.findUnique({ where: { id: +id } });
 
     if (!foundUser) {
-      throw new NotFoundException();
+      throw new NotFoundException('user not found');
     }
 
     if (foundUser.id !== +decodedUserInfo.id) {
-      throw new ForbiddenException();
+      throw new ForbiddenException('you can not delete');
     }
 
     const deleteUser = await this.prisma.user.delete({
       where: {
-        id: +req.params.id,
+        id: +id,
       },
     });
     if (deleteUser) {

@@ -30,7 +30,7 @@ export class NotificationsController {
 
   //========= read notification ==========//
   @UseGuards(JwtAuthGuard)
-  @Put('notificationId/read')
+  @Put('read/:notificationId')
   markNotificationAsRead(@Param('notificationId') notificationId: number) {
     return this.notificationsService.markNotificationAsRead(notificationId);
   }

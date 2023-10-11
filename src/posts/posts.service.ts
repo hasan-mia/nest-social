@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { PrismaService } from 'prisma/prisma.service';
 import { PostDto } from './dto/post.dto';
@@ -53,13 +58,126 @@ export class PostsService {
   }
 
   // ========update feed post=========
-  async updatePost(dto: PostDto) {
-    return { data: dto };
+  async updatePost(
+    id: number,
+    dto: PostDto,
+    imageUrls: string[],
+    req: Request,
+    res: Response,
+  ) {
+    const { userId, content } = dto;
+
+    const decodedUserInfo = (req as any).user;
+    const foundUser = await this.prisma.user.findUnique({
+      where: { id: +userId },
+    });
+
+    if (!foundUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (foundUser.id !== +decodedUserInfo.id) {
+      throw new ForbiddenException();
+    }
+
+    try {
+      const post = await this.prisma.post.findUnique({
+        where: { id: +id },
+      });
+
+      if (!post) {
+        throw new NotFoundException('Post not found');
+      }
+
+      const updateData: {
+        content: string;
+        images?: { createMany: { data: { imageUrl: string }[] } };
+      } = {
+        content: content,
+      };
+
+      if (imageUrls && imageUrls.length > 0) {
+        // find related images
+        const existingImages = await this.prisma.image.findMany({
+          where: {
+            postId: +id,
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        // delete existing images
+        await this.prisma.image.deleteMany({
+          where: {
+            id: {
+              in: existingImages.map((image) => image.id),
+            },
+          },
+        });
+
+        updateData.images = {
+          createMany: {
+            data: imageUrls.map((imageUrl) => ({ imageUrl })),
+          },
+        };
+      }
+
+      const updatedPost = await this.prisma.post.update({
+        where: {
+          id: +id,
+        },
+        data: updateData,
+        include: {
+          images: true,
+        },
+      });
+
+      return res.status(201).json({
+        message: 'Updated successfully',
+        data: updatedPost,
+      });
+    } catch (error) {
+      return { message: 'Internal server error', error };
+    }
   }
 
   // ========delete feed post=========
   async deletePost(id: number) {
-    return { id };
+    try {
+      const post = await this.prisma.post.findUnique({
+        where: { id: +id },
+        select: { userId: true },
+      });
+
+      if (!post) {
+        throw new NotFoundException('Post not found');
+      }
+
+      // find related images
+      const existingImages = await this.prisma.image.findMany({
+        where: {
+          postId: +id,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      // delete existing images
+      await this.prisma.image.deleteMany({
+        where: {
+          id: {
+            in: existingImages.map((image) => image.id),
+          },
+        },
+      });
+
+      return { message: 'Delete successfully' };
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      throw new InternalServerErrorException('Internal server error');
+    }
   }
 
   // ========all feed post=========
@@ -106,14 +224,66 @@ export class PostsService {
         },
       });
 
-      return { data: posts };
+      return {
+        message: 'posts found',
+        data: posts,
+      };
     } catch (error) {
-      return error;
+      return { message: 'Internal server error', error };
     }
   }
 
   // ========single post=========
   async getPost(id: number) {
-    return { id };
+    try {
+      const post = await this.prisma.post.findFirst({
+        where: { id: +id },
+        include: {
+          images: true,
+          author: {
+            select: {
+              id: true,
+              username: true,
+              email: true,
+            },
+          },
+          reactions: true,
+          comments: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  email: true,
+                },
+              },
+              reactions: true,
+              replies: {
+                include: {
+                  user: {
+                    select: {
+                      id: true,
+                      username: true,
+                      email: true,
+                    },
+                  },
+                  reactions: true,
+                  notifications: true,
+                },
+              },
+              notifications: true,
+            },
+          },
+          notifications: true,
+        },
+      });
+
+      return {
+        message: 'post found',
+        data: post,
+      };
+    } catch (error) {
+      return { message: 'Internal server error', error };
+    }
   }
 }
