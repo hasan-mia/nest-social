@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Story */
+.story-create{
+  height: 23vh!important
+}
+.slick-next, .slick-prev {
+  border: 2px solid #c9c2c2;
+  border-radius: 50%;
+  padding: 8px;
+  width: 2rem;
+  height: 2rem;
+  background: #fff;
+  z-index: 1;
+}
+
+.slick-next:hover, .slick-prev:hover {
+  background: #ffffffef;
+;
+}
+.slick-next {
+  right: -20px;
+}
+
+.slick-prev{
+  left: -20px;
+}
+/* =====Left sidebar scroll=== */
+/* .left-sidebar, .right-sidebar {
+  height: 110vh;
+  overflow: scroll;
+  scroll-behavior: auto;
+} */
+
+.navbar > li:hover {
+  border-bottom: 4px solid #3b5998 ;
+  border-radius: 0;
+  position: relative;
+  color: #3b5998 ;
+  padding-bottom: 2px;
+}
+
+/*Chatroom Scrollbar Design */
+ /* Scroll */
+ .right-sidebar::-webkit-scrollbar, .left-sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+.right-sidebar::-webkit-scrollbar-track, .left-sidebar::-webkit-scrollbar-track  {
+  border-radius: 10px;
+  height:5px;
+}
+/* Handle */
+.right-sidebar::-webkit-scrollbar-thumb, .left-sidebar::-webkit-scrollbar-thumb {
+  background: #dadada;
+  border: 1px solid #dadada;
+  border-radius: 10px;
+  height: 50px;
+}
+/* ========Media Query======= */
+@media(max-width:767px){
+  .sm-none{
+    display: none;
+  }
+  .story-create{
+    height: 46vh!important
+  }
+}
+
+/* ========Media Query======= */
+@media(min-width:768px){
+  .left-sidebar, .right-sidebar, .navbar{
+    position: fixed;
+  }
+  .navbar{
+    z-index: 2;
+  }
+  .main{
+    margin-top: 5rem;
+  }
+  .left-sidebar, .right-sidebar{
+    width: 24%;
+    overflow-y: scroll;
+  }
+  
+}
