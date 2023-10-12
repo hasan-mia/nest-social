@@ -10,10 +10,7 @@ async function bootstrap() {
   });
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-  app.use(
-    '/upload',
-    express.static('/home/hoolo/Desktop/web/nest-social/public/upload'),
-  );
+  app.use('/public', express.static('public'));
   app.use(helmet());
   app.use(cookieParser());
   await app.listen(5000);
