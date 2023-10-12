@@ -1,63 +1,64 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
-import recommend from '../api/recommend';
+import postApi from '../api/postApi';
 
 const postSlice = createSlice({
     name: 'post',
     initialState: {
         isLoading: false,
         isError: false,
-        recommends: null,
+        posts: null,
         perPage: 0,
         currentPage: 0,
-        nextPage: null,
-        isRatingLoading: false,
-        isRatingError: false,
-        ratings: 0,
+        nextPage: 0,
+        nextPageUrl: null,
+        // single post
+        post: null,
     },
     extraReducers: (builder) => {
-        // get all recommend / review
-        builder.addCase(recommend.getAllRecommend.pending, (state) => {
+        // get all post
+        builder.addCase(postApi.getAllPost.pending, (state) => {
             state.isLoading = true;
         });
 
-        builder.addCase(recommend.getAllRecommend.fulfilled, (state, action) => {
+        builder.addCase(postApi.getAllPost.fulfilled, (state, action) => {
             const { data } = action.payload;
-            state.perPage = data.pagination.perPage;
-            state.currentPage = data.pagination.currentPage;
-            state.nextPage = data.pagination.nextPage;
-            if (!state.recommends) {
-                state.recommends = [];
-                state.recommends.push(...data.data);
+            state.perPage = data.perPage;
+            state.currentPage = data.currentPage;
+            state.nextPage = data.nextPage;
+            state.nextPageUrl =  data.nextPageUrl
+            if (!state.posts) {
+                state.posts = [];
+                state.posts.push(...data.data);
             } else {
                 const newData = data.data.filter(
-                    (item1) => !state.recommends.some((item) => item.id === item1.id)
+                    (item1) => !state.posts.some((item) => item.id === item1.id)
                 );
-                state.recommends.push(...newData);
+                state.posts.push(...newData);
             }
             state.isLoading = false;
         });
 
-        builder.addCase(recommend.getAllRecommend.rejected, (state) => {
+        builder.addCase(postApi.getAllPost.rejected, (state) => {
             state.isLoading = false;
             state.isError = true;
-            state.nextPage = null; // Set nextPage to null when an error occurs
+            state.nextPage = null; 
         });
 
-        // get avarage rating
-        builder.addCase(recommend.getAllRating.pending, (state) => {
-            state.isRatingLoading = true;
+        // get single post
+        builder.addCase(postApi.getPostDetails.pending, (state) => {
+            state.isLoading = true;
         });
 
-        builder.addCase(recommend.getAllRating.fulfilled, (state, action) => {
+        builder.addCase(postApi.getPostDetails.fulfilled, (state, action) => {
             const { data } = action.payload;
-            state.isRatingLoading = false;
-            state.ratings = data.data.averageRating;
+            state.isLoading = false;
+            state.post = data.data;
         });
 
-        builder.addCase(recommend.getAllRating.rejected, (state) => {
-            state.isRatingLoading = false;
-            state.isRatingError = true;
+        builder.addCase(postApi.getPostDetails.rejected, (state) => {
+            state.isLoading = false;
+            state.isError = true;
         });
     },
 });

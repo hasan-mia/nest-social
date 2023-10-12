@@ -15,10 +15,11 @@ url.updateUserCover = `${config.baseUrl}user/update/cover`; // [put] params as i
 url.deleteUser = `${config.baseUrl}user/delete`; // [delete] params as id
 
 // Post api
-url.getAllPost = `${config.baseUrl}post/all`; // [get] http://localhost:5000/post/all?page=1&limit=2
+url.getAllPost = `${config.baseUrl}post/all`; // [get]
 url.getPostDetails = `${config.baseUrl}post`; // [get] id with parameters
 url.createPost = `${config.baseUrl}post/create`; // [post]
 url.updatePost = `${config.baseUrl}post/update`; // id with parameters  [put]
+url.deletePost = `${config.baseUrl}post/delete`; // id with parameters  [put]
 
 // Comment api
 url.createComment = `${config.baseUrl}comment/create`; // [post]

@@ -1,22 +1,57 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+import config from '../config/config';
+import url from '../config/url';
 
-export const authApi = createApi({
-	reducerPath: "authApi",
-	baseQuery: fetchBaseQuery({
-		baseUrl: "https://api.webmanza.com/",
-		prepareHeaders: (headers) => {
-			headers.set("Origin", "bookshop.webmanza.com");
-			return headers;
-		},
-	}),
-	endpoints: (builder) => ({
-		getAccessToken: builder.mutation({
-			query: () => ({
-				url: "/auth/v2/get-access-token",
-				method: "POST",
-			}),
-		}),
-	}),
+const name = 'authApi/';
+const authApi = {};
+
+// signup
+authApi.signupUser = async (data) => {
+    const res = await axios
+        .post(url.signUp, data, config.simpleHeader)
+        .then((response) => response)
+        .catch((err) => err.response);
+    return res;
+};
+
+// signin
+authApi.signinUser = async (data) => {
+    const res = await axios
+        .post(url.signIn, data, config.simpleHeader)
+        .then((response) => response)
+        .catch((err) => err.response);
+    return res;
+};
+
+// signout
+authApi.signinOut = async (data) => {
+    const res = await axios
+        .post(url.signinOut, data, config.simpleHeader)
+        .then((response) => response)
+        .catch((err) => err.response);
+    return res;
+}
+
+// update password
+authApi.updatePass = async (data) => {
+    const res = await axios
+        .post(url.signinOut, data, config.simpleHeader)
+        .then((response) => response)
+        .catch((err) => err.response);
+    return res;
+}
+
+// single user information
+authApi.userInfo = createAsyncThunk(`${name}userInfo`, async (email) => {
+    const res = await axios.get(url.userInfo, email, config.basicHeader);
+    return res;
 });
 
-export const { useGetAccessTokenMutation } = authApi;
+// all user
+authApi.allUser = createAsyncThunk(`${name}allUser`, async () => {
+    const res = await axios.get(url.allUser, config.basicHeader);
+    return res;
+});
+
+export default authApi;

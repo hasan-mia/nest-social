@@ -12,6 +12,7 @@ const store = configureStore({
             serializableCheck: {
                 ignoredActions: [
                     'auth/allUser/fulfilled',
+                    "postApi/getAllPost/fulfilled"
                 ],
             },
         }),

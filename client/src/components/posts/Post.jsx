@@ -1,3 +1,4 @@
+import moment from "moment";
 import React from "react";
 import { BiWorld } from "react-icons/bi";
 import { BsThreeDots } from "react-icons/bs";
@@ -8,19 +9,20 @@ import ReactionBtn from "../reaction/ReactionBtn";
 import PostCard from "./PostCard";
 import CommentInput from "./comments/CommentInput";
 
-const Post = () => {
+const Post = ({post}) => {
+  console.log(post);
   return (
     <div className="flex flex-col flex-start gap-2 bg-white pb-2 mb-4 border rounded-lg">
       <div className="flex justify-between items-start gap-1 px-2 py-2 w-full mb-2">
         {/* ==Profile== */}
         <div className="flex justify-center gap-x-2">
           <Link href="#">
-            <img alt="name" src={userImag} className="w-10 h-10 rounded-full" />
+            <img alt="name" src={post?.author?.profileImage? post?.author?.profileImage : userImag} className="w-10 h-10 rounded-full" />
           </Link>
           <div className="flex flex-col">
-            <p>Emah John</p>
+            <p>{post?.author?.name? post?.author?.name : post?.author?.email}</p>
             <p className="flex items-center gap-2 text-gray-700 text-sm">
-              <span>6hr</span>{" "}
+              <span>{moment(post?.timestamp).fromNow()}</span>
               <span>
                 <BiWorld />
               </span>
@@ -47,7 +49,7 @@ const Post = () => {
       {/* Post Content */}
       <div className="post-content">
         {/* Post card */}
-        <PostCard/>
+        <PostCard title={post.content} images={post.images}/>
 
         <div className="comment px-4 py-2">
           {/* Show Like/Comment */}

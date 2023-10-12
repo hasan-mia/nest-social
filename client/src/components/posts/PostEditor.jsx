@@ -19,10 +19,10 @@ const PostEditor = () => {
   const [images, setImages] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
   const handleImage = (e) => {
-    if (e.target.files.length <= 4) {
+    if (e.target.files.length <= 5) {
       setImages([...e.target.files]);
     } else {
-      console.log("You can't upload more than 4");
+      console.log("You can't upload more than 5");
       setImages([]);
     }
   };
@@ -36,13 +36,13 @@ const PostEditor = () => {
     //             formData.append(`images[]`, file);
     //         });
     //         formData.append('text', title);
-    //         // const res = await community.postCommunity(formData);
+    //         // const res = await postApi.createPost(formData);
 
     //         // if (res.status === 201) {
     //         //     closeModal()
     //         //     setImages([]);
     //         //     setContent('');
-    //         //     // dispatch(community.getAllCommunity(`${url.getAllCommunity}?limit=5`));
+    //         //     // dispatch(postApi.getAllPost(`${url.getAllPost}?limit=5`));
     //         // }
     // } else {
     //     setLoginOpen(true);
