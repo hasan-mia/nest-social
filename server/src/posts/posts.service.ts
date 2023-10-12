@@ -2,7 +2,6 @@
 import {
   ForbiddenException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
@@ -69,7 +68,7 @@ export class PostsService {
     const { userId, content } = dto;
 
     const decodedUserInfo = (req as any).user;
-    if (+id !== +decodedUserInfo.id) {
+    if (+userId !== +decodedUserInfo.id) {
       throw new ForbiddenException('you can update only your post');
     }
 
@@ -145,8 +144,8 @@ export class PostsService {
 
   // ========delete feed post=========
   async deletePost(id: number, req: Request) {
-    const decodedUserInfo = (req as any).user;
     try {
+      const decodedUserInfo = (req as any).user;
       const post = await this.prisma.post.findUnique({
         where: { id: +id },
         select: { userId: true },
@@ -180,8 +179,7 @@ export class PostsService {
 
       return { message: 'Delete successfully' };
     } catch (error) {
-      console.error('Error deleting post:', error);
-      throw new InternalServerErrorException('Internal server error');
+      return error;
     }
   }
 

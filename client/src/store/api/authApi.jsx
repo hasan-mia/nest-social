@@ -14,18 +14,8 @@ export const authApi = createApi({
 			query: () => ({
 				url: "/auth/v2/get-access-token",
 				method: "POST",
-				// headers: {
-				// 	Origin: "bookshop.webmanza.com",
-				// },
 			}),
 		}),
-		// getAccessToken: builder.query({
-		// 	query: () => "auth/v2/get-access-token",
-		// 	method: "GET",
-		// 	// headers: {
-		// 	// 	Origin: "bookshop.webmanza.com",
-		// 	// },
-		// }),
 	}),
 });
 
