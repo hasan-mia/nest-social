@@ -186,7 +186,7 @@ export class PostsService {
   // ========all feed post=========
   async getPosts(page: number, limit: number) {
     const currentPage = page || 1;
-    const perPage = limit || 2;
+    const perPage = limit || 5;
     const skip = (currentPage - 1) * perPage;
 
     try {
@@ -237,7 +237,8 @@ export class PostsService {
       ]);
 
       const totalPages = Math.ceil(totalPosts / perPage);
-      const nextPage =
+      const nextPage = currentPage + 1;
+      const nextPageUrl =
         currentPage < totalPages
           ? `${domain}/post/all?page=${currentPage + 1}&limit=${perPage}`
           : null;
@@ -248,6 +249,7 @@ export class PostsService {
         currentPage,
         totalPages,
         nextPage,
+        nextPageUrl,
         data: posts,
       };
     } catch (error) {
