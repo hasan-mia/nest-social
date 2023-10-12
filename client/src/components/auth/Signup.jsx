@@ -4,11 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import authApi from "../../store/api/authApi";
 
 export default function Signin({ handleSwitch }) {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const [active, setActive] = useState(false);
     const [type, setType] = useState('password');
-    const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
     const [loading, setLoading] = useState(false);
@@ -29,24 +28,12 @@ export default function Signin({ handleSwitch }) {
         };
         const res = await authApi.signupUser(data);
         if (res.status === 201) {
-            
-            localStorage.setItem('session', res.data.token);
-            // const [headerBase64, payloadBase64, signature] = res.data.token.split('.');
-            // const decodedPayload = atob(payloadBase64);
-            // dispatch(setAuth(JSON.parse(decodedPayload)));
             setLoading(false);
-            navigate(-1, { replace: false });
-        } else if (res.status === 406) {
-            // toast.error(`${res.data.error}`);
-            setLoading(false);
-        } else if (res.status === 409) {
-            // toast.error(`${res.data.error}`);
-            setLoading(false);
-        } else if (res.status === 422) {
-            // toast.error(`${email} allready registered`);
+            handleSwitch()
+        } else if (res.status === 400) {
+            // toast.error(`${res.data.message}`);
             setLoading(false);
         } else {
-            // toast.error('something went wrong');
             setLoading(false);
         }
     };

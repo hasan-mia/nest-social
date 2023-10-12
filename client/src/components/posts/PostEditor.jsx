@@ -35,7 +35,7 @@ const PostEditor = () => {
     //         images.forEach((file) => {
     //             formData.append(`images[]`, file);
     //         });
-    //         formData.append('text', title);
+    //         formData.append('content', content);
     //         // const res = await postApi.createPost(formData);
 
     //         // if (res.status === 201) {

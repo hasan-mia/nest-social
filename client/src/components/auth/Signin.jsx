@@ -27,25 +27,18 @@ export default function Signin({ handleSwitch }) {
             password: pass,
         };
         const res = await authApi.signinUser(data);
-        if (res.status === 200) {
+        console.log(res);
+        if (res.status === 201) {
             // toast.success(`${res.data.message}`);
-            localStorage.setItem('session', res.data.token);
-            const [headerBase64, payloadBase64, signature] = res.data.token.split('.');
-            const decodedPayload = atob(payloadBase64);
+            // localStorage.setItem('session', res.data.token);
+            // const [headerBase64, payloadBase64, signature] = res.data.token.split('.');
+            // const decodedPayload = atob(payloadBase64);
             // dispatch(setAuth(JSON.parse(decodedPayload)));
             setLoading(false);
-            navigate(-1, { replace: false });
-        } else if (res.status === 406) {
-            // toast.error(`${res.data.error}`);
-            setLoading(false);
-        } else if (res.status === 401) {
-            // toast.error(`${res.data.error}`);
-            setLoading(false);
-        } else if (res.status === 404) {
-            // toast.error(`${res.data.error}`);
-            setLoading(false);
-        } else if (res.status === 412) {
-            // toast.error(`${res.data.error}`);
+            // navigate(-1, { replace: false });
+        } else if (res.data.statusCode === 400) {
+            // toast.error(`${res.data.message}`);
+            console.log(res.data.message);
             setLoading(false);
         } else {
             // toast.success(`something went wrong`);

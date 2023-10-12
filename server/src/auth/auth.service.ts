@@ -47,6 +47,23 @@ export class AuthService {
       },
     });
 
+    // const foundUser = await this.prisma.user.findUnique({
+    //   where: {
+    //     email,
+    //   },
+    // });
+
+    // const token = await this.generateSignToken({
+    //   userId: foundUser.id.toString(),
+    //   email: foundUser.email,
+    // });
+
+    // if (!token) {
+    //   throw new ForbiddenException('Could not signin');
+    // }
+
+    // res.cookie('session', token, {});
+
     return { message: 'Signup Successfully' };
   }
 
@@ -84,16 +101,16 @@ export class AuthService {
       throw new ForbiddenException('Could not signin');
     }
 
-    res.cookie('token', token, {});
+    res.cookie('session', token, {});
 
-    return res.send({ message: 'Signin succefully' });
+    return res.send({ message: 'Signin succefully', token });
   }
 
   // ================
   //    Sign Out    //
   //=================
   async signout(req: Request, res: Response) {
-    res.clearCookie('token');
+    res.clearCookie('session');
     return res.send({ message: 'Signout succefully' });
   }
 
