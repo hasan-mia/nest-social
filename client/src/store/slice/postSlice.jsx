@@ -7,7 +7,7 @@ const postSlice = createSlice({
     initialState: {
         isLoading: false,
         isError: false,
-        posts: null,
+        posts: [],
         perPage: 0,
         currentPage: 0,
         nextPage: 0,

@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import Cookies from 'js-cookie';
 import authApi from '../api/authApi';
 
 
@@ -9,10 +10,15 @@ const authSlice = createSlice({
         isError: false,
         errors: null,
         isLogin: false,
+        userId: null,
         users: null,
         userInfo: null,
     },
     reducers: {
+        setUserId: (state, action) => {
+            const { payload } = action;
+            state.userId = payload;
+        },
         setAuth: (state, action) => {
             const { payload } = action;
             state.userInfo = payload;
@@ -23,7 +29,7 @@ const authSlice = createSlice({
             state.userInfo = null;
             state.isLoading = false;
             state.isLogin = false;
-            localStorage.removeItem('session');
+            Cookies.remove('token')
         },
     },
     extraReducers: (builder) => {
@@ -44,5 +50,5 @@ const authSlice = createSlice({
         });
     },
 });
-export const { setAuth, logOut } = authSlice.actions;
+export const { setUserId, setAuth, logOut } = authSlice.actions;
 export default authSlice.reducer;

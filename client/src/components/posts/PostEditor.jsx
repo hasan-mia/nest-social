@@ -1,8 +1,10 @@
+import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
 import { FaVideo } from "react-icons/fa";
 import { MdPhotoLibrary } from "react-icons/md";
 import { Link } from "react-router-dom";
 import userImag from "../../assets/userImg.png";
+import config from "../../store/config/config";
 import PostModal from "./PostModal";
 
 const PostEditor = () => {
@@ -30,22 +32,27 @@ const PostEditor = () => {
   // handle storing post
   const handlePublishPost = async (e) => {
     e.preventDefault();
-    // if (userInfo) {
-    //     const formData = new FormData();
-    //         images.forEach((file) => {
-    //             formData.append(`images[]`, file);
-    //         });
-    //         formData.append('content', content);
-    //         // const res = await postApi.createPost(formData);
-
-    //         // if (res.status === 201) {
-    //         //     closeModal()
-    //         //     setImages([]);
-    //         //     setContent('');
-    //         //     // dispatch(postApi.getAllPost(`${url.getAllPost}?limit=5`));
-    //         // }
-    // } else {
-    //     setLoginOpen(true);
+    const formData = new FormData();
+    images.forEach((file) => {
+      formData.append(`images[]`, file);
+    });
+    formData.append("content", content);
+    fetch( `${config.baseUrl}post/create`, {
+    method: 'GET',
+    headers: {
+        'Authorization': `Bearer ${Cookies.token}`
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error(error));
+    // const res = await postApi.createPost(formData);
+    // console.log(res);
+    // if (res.status === 201) {
+    //     closeModal()
+    //     setImages([]);
+    //     setContent('');
+    //     // dispatch(postApi.getAllPost(`${url.getAllPost}?limit=5`));
     // }
   };
   useEffect(() => {

@@ -101,7 +101,7 @@ export class AuthService {
       throw new ForbiddenException('Could not signin');
     }
 
-    res.cookie('token', token, {});
+    // res.cookie('token', token, { httpOnly: true });
 
     return res.send({ message: 'Signin succefully', token });
   }

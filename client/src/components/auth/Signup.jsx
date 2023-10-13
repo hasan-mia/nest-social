@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import authApi from "../../store/api/authApi";
 
 export default function Signin({ handleSwitch }) {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
     const [active, setActive] = useState(false);
     const [type, setType] = useState('password');
     const [email, setEmail] = useState('');
@@ -28,10 +26,12 @@ export default function Signin({ handleSwitch }) {
         };
         const res = await authApi.signupUser(data);
         if (res.status === 201) {
+            toast.error(`${res.data.message} please signin`);
+            setLoading(false);
             setLoading(false);
             handleSwitch()
         } else if (res.status === 400) {
-            // toast.error(`${res.data.message}`);
+            toast.error(`${res.data.message}`);
             setLoading(false);
         } else {
             setLoading(false);

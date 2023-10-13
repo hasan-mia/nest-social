@@ -1,6 +1,8 @@
+import Cookies from "js-cookie";
+
 const config = {};
 config.baseUrl = process.env.REACT_APP_BASE_URL;
-config.accesstoken = process.env.REACT_APP_ACCESS_TOKEN_SECRET;
+config.accesstoken = Cookies.get('token');
 
 config.simpleHeader = {
     headers: {
@@ -12,7 +14,7 @@ config.basicHeader = {
     headers: {
         'Content-type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-        Authorization: `Bearer ${config.accesstoken}`,
+         Authorization: `${config.accesstoken}`,
     },
 };
 config.paramsWithHeader = (param) => {
@@ -20,7 +22,7 @@ config.paramsWithHeader = (param) => {
         params: param,
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${config.accesstoken}`,
+            Authorization: `${config.accesstoken}`,
         },
     };
     return params;
@@ -30,7 +32,7 @@ config.payloadWithHeader = (payload) => {
         headers: {
             'Content-type': 'application/json',
             'Access-Control-Allow-Origin': '*',
-            Authorization: `Bearer ${config.accesstoken}`,
+            Authorization: `${config.accesstoken}`,
         },
         data: JSON.stringify(payload),
     };
