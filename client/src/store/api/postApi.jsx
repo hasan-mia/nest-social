@@ -8,7 +8,7 @@ const postApi = {};
 // create post
 postApi.createPost = async (data) => {
     const res = await axios
-        .post(url.createPost, data, config.basicHeader)
+        .post(url.createPost, data, config.fileHeader(config.accesstoken))
         .then((response) => response)
         .catch((err) => err.response);
     return res;

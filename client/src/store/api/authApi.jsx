@@ -43,8 +43,8 @@ authApi.updatePass = async (data) => {
 }
 
 // single user information
-authApi.userInfo = createAsyncThunk(`${name}userInfo`, async (email) => {
-    const res = await axios.get(url.userInfo, email, config.basicHeader);
+authApi.userInfo = createAsyncThunk(`${name}userInfo`, async () => {
+    const res = await axios.get(url.userInfo, config.basicHeader);
     return res;
 });
 

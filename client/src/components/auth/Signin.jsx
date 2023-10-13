@@ -2,11 +2,11 @@ import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import useDecode from "../../hooks/useDecode";
+import useToken from "../../hooks/useToken";
 import authApi from "../../store/api/authApi";
 
 export default function Signin({ handleSwitch }) {
-  const { setToken } = useDecode();
+  const { setToken } = useToken();
   const [active, setActive] = useState(false);
   const [type, setType] = useState("password");
   const [email, setEmail] = useState("");
@@ -62,6 +62,7 @@ export default function Signin({ handleSwitch }) {
             placeholder="Email"
             className="input input-bordered input-md w-full max-w-xs"
             name="email"
+            value={email}
             onChange={(e) => credentialHandler(e.target.name, e.target.value)}
           />
           <input
@@ -69,6 +70,7 @@ export default function Signin({ handleSwitch }) {
             placeholder="Password"
             className="input input-bordered input-md w-full max-w-xs"
             name="password"
+            value={pass}
             onChange={(e) => credentialHandler(e.target.name, e.target.value)}
             onClick={activeHandler}
           />

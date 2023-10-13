@@ -28,14 +28,14 @@ export default function PostModal({
             className="py-4 px-2 my-3 border rounded-xl active:shadow-none outline-none"
             onChange={(e) => setContent(e.target.value)}
           />
-          <div className="flex flex-col md:flex-row justify-start md:justify-between mt-1">
+          <div className="flex flex-col md:flex-row justify-between mt-1 gap-y-2 md:gap-0">
             <input
               type="file"
               multiple
               onChange={handleImage}
-              className="border-0 hidden md:block active:border-none active:shadow-none outline-none"
+              className="border-0 md:block active:border-none active:shadow-none outline-none"
             />
-            <div className="flex">
+            <div className="flex flex-col md:flex-grow">
               {previewUrls.map((url) => (
                 <img
                   key={Math.random()}

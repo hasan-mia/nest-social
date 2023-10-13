@@ -26,7 +26,7 @@ export default function Signin({ handleSwitch }) {
         };
         const res = await authApi.signupUser(data);
         if (res.status === 201) {
-            toast.error(`${res.data.message} please signin`);
+            toast.success(`${res.data.message} please signin`);
             setLoading(false);
             setLoading(false);
             handleSwitch()

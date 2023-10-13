@@ -33,6 +33,22 @@ const authSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
+         // get user information
+        builder.addCase(authApi.userInfo.pending, (state) => {
+            state.isLoading = true;
+        });
+
+        builder.addCase(authApi.userInfo.fulfilled, (state, action) => {
+            const { data } = action.payload;
+            state.isLoading = false;
+            state.userInfo = data.user;
+        });
+
+        builder.addCase(authApi.userInfo.rejected, (state) => {
+            state.isLoading = false;
+            state.isError = true;
+        });
+
         // get all users
         builder.addCase(authApi.allUser.pending, (state) => {
             state.isLoading = true;

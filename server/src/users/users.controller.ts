@@ -26,9 +26,9 @@ export class UsersController {
 
   //========= get user by id ==========//
   @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  getUser(@Param() params: { id: number }, @Req() req) {
-    return this.usersService.getUser(params.id, req);
+  @Get('info')
+  getUser(@Req() req) {
+    return this.usersService.getUser(req);
   }
 
   //========= update user Info ==========//

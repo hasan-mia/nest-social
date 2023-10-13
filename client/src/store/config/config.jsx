@@ -14,7 +14,7 @@ config.basicHeader = {
     headers: {
         'Content-type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-         Authorization: `${config.accesstoken}`,
+         'Authorization': `Bearer ${config.accesstoken}`,
     },
 };
 config.paramsWithHeader = (param) => {
@@ -22,17 +22,35 @@ config.paramsWithHeader = (param) => {
         params: param,
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `${config.accesstoken}`,
+            'Authorization': `Bearer ${config.accesstoken}`,
         },
     };
     return params;
 };
+
+config.fileHeader = () => {
+    const headers = {
+        
+    };
+    return headers;
+};
+
+config.fileHeader = (token) => {
+    const header = {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`,
+        },
+    };
+    return header;
+};
+
 config.payloadWithHeader = (payload) => {
     const params = {
         headers: {
             'Content-type': 'application/json',
             'Access-Control-Allow-Origin': '*',
-            Authorization: `${config.accesstoken}`,
+            'Authorization': `Bearer ${config.accesstoken}`,
         },
         data: JSON.stringify(payload),
     };

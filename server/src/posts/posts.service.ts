@@ -232,6 +232,9 @@ export class PostsService {
             },
             notifications: true,
           },
+          // orderBy: {
+          //   createdAt: 'desc',
+          // },
         }),
         this.prisma.post.count(),
       ]);

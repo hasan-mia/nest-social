@@ -14,12 +14,11 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   //========= get user by id ==========//
-  async getUser(id: number, req: Request) {
+  async getUser(req: Request) {
     const decodedUserInfo = (req as any).user;
-    if (+id !== +decodedUserInfo.id) {
-      throw new ForbiddenException('you can access only your info');
-    }
-    const foundUser = await this.prisma.user.findUnique({ where: { id: +id } });
+    const foundUser = await this.prisma.user.findUnique({
+      where: { id: +decodedUserInfo.id },
+    });
 
     if (!foundUser) {
       throw new NotFoundException('user not found');

@@ -1,29 +1,21 @@
-import Cookies from "js-cookie";
-import React from "react";
+import React, { useEffect } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { BiHomeHeart } from "react-icons/bi";
 import { BsFacebook, BsSearch } from "react-icons/bs";
 import { IoMdNotifications } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import userImag from "../../src/assets/userImg.png";
-import useDecode from "../hooks/useDecode";
+import authApi from "../store/api/authApi";
 
 const Navbar = () => {
-  const {userId} = useDecode();
-  console.log(userId? "ok": "no");
-  const apiUrl = 'http://localhost:5000'; 
-  const accessToken = Cookies.get('token'); 
-
-  fetch(`${apiUrl}/user/1`, {
-      method: 'GET',
-      headers: {
-          'Authorization': `Bearer ${accessToken}`
-      }
-  })
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error(error));
-
+const {userInfo}=useSelector(state=>state.auth);
+const dispatch = useDispatch();
+useEffect(()=>{
+  if (!userInfo) {
+    dispatch(authApi.userInfo())
+  }
+},[userInfo, dispatch])
   return (
     <header className="pb-2">
       <div className="w-full navbar justify-between bg-base-100 border border-b-2 border-gray-100">

@@ -8,7 +8,7 @@ url.signOut = `${config.baseUrl}auth/signout`;
 url.updatePass = `${config.baseUrl}auth/reset/password`;
 // user information
 url.allUser = `${config.baseUrl}user/get/all`; // [get]
-url.userInfo = `${config.baseUrl}user`; // params as id
+url.userInfo = `${config.baseUrl}user/info`; // params as id
 url.updateUser = `${config.baseUrl}user/update`; // [put] params as id
 url.updateUserProfile = `${config.baseUrl}user/update/profile`; // [put] params as id
 url.updateUserCover = `${config.baseUrl}user/update/cover`; // [put] params as id

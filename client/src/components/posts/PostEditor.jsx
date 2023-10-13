@@ -1,13 +1,17 @@
-import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
 import { FaVideo } from "react-icons/fa";
 import { MdPhotoLibrary } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import userImag from "../../assets/userImg.png";
-import config from "../../store/config/config";
+import postApi from "../../store/api/postApi";
+import url from "../../store/config/url";
 import PostModal from "./PostModal";
 
 const PostEditor = () => {
+  const {userInfo}=useSelector(state=>state.auth)
+  const dispatch =useDispatch();
   // Publish Post Modal
   const modalRef = useRef(null);
   const openModal = () => {
@@ -24,36 +28,37 @@ const PostEditor = () => {
     if (e.target.files.length <= 5) {
       setImages([...e.target.files]);
     } else {
-      console.log("You can't upload more than 5");
+      toast.error("You can't upload more than 5");
       setImages([]);
     }
   };
-
   // handle storing post
   const handlePublishPost = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    images.forEach((file) => {
-      formData.append(`images[]`, file);
-    });
-    formData.append("content", content);
-    fetch( `${config.baseUrl}post/create`, {
-    method: 'GET',
-    headers: {
-        'Authorization': `Bearer ${Cookies.token}`
+    if (userInfo) {
+      const formData = new FormData();
+      images.forEach((file) => {
+        formData.append(`images`, file);
+      });
+      formData.append("userId", userInfo.id);
+      formData.append("content", content);
+      const res = await postApi.createPost(formData);
+      console.log(res);
+      if (res.status === 201) {
+          closeModal()
+          setImages([]);
+          setContent('');
+          dispatch(postApi.getAllPost(`${url.getAllPost}?limit=5`));
+      }
+      if (res.status === 400) {
+        setContent('');
+        setImages([]);
+        toast.error(res.data.message[0])
+      }
+    }else{
+      toast.info("Please login")
     }
-})
-.then(response => response.json())
-.then(data => console.log(data))
-.catch(error => console.error(error));
-    // const res = await postApi.createPost(formData);
-    // console.log(res);
-    // if (res.status === 201) {
-    //     closeModal()
-    //     setImages([]);
-    //     setContent('');
-    //     // dispatch(postApi.getAllPost(`${url.getAllPost}?limit=5`));
-    // }
+    
   };
   useEffect(() => {
     if (images) {
