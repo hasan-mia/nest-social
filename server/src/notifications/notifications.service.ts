@@ -34,6 +34,9 @@ export class NotificationsService {
         where: {
           userId: +userId,
         },
+        orderBy: {
+          createdAt: 'desc',
+        },
       });
       return userNotification;
     } catch (error) {

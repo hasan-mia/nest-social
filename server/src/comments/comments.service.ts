@@ -22,19 +22,59 @@ export class CommentsService {
         data: { postId, userId, content },
       });
       // return all comments of that posts
-      const postWithComments = await this.prisma.post.findUnique({
-        where: { id: +postId },
+      const singlePost = await this.prisma.post.findUnique({
+        where: {
+          id: +postId,
+        },
         include: {
-          comments: {
-            include: {
-              replies: true,
+          images: true,
+          author: {
+            select: {
+              id: true,
+              username: true,
+              email: true,
+              name: true,
             },
           },
+          reactions: true,
+          comments: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  email: true,
+                  name: true,
+                },
+              },
+              reactions: true,
+              replies: {
+                include: {
+                  user: {
+                    select: {
+                      id: true,
+                      username: true,
+                      email: true,
+                      name: true,
+                    },
+                  },
+                  reactions: true,
+                  notifications: true,
+                },
+                orderBy: {
+                  createdAt: 'desc',
+                },
+              },
+              notifications: true,
+            },
+            orderBy: {
+              createdAt: 'desc',
+            },
+          },
+          notifications: true,
         },
       });
-
-      const comments = postWithComments?.comments || [];
-      return res.send(comments);
+      return res.send({ message: 'success', data: singlePost });
     } catch (error) {
       return res.send(error);
     }
@@ -66,20 +106,60 @@ export class CommentsService {
         data: { content },
       });
 
-      // return all comments of that posts
-      const postWithComments = await this.prisma.post.findUnique({
-        where: { id: +postId },
+      // return single post with comments
+      const singlePost = await this.prisma.post.findUnique({
+        where: {
+          id: +postId,
+        },
         include: {
-          comments: {
-            include: {
-              replies: true,
+          images: true,
+          author: {
+            select: {
+              id: true,
+              username: true,
+              email: true,
+              name: true,
             },
           },
+          reactions: true,
+          comments: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  email: true,
+                  name: true,
+                },
+              },
+              reactions: true,
+              replies: {
+                include: {
+                  user: {
+                    select: {
+                      id: true,
+                      username: true,
+                      email: true,
+                      name: true,
+                    },
+                  },
+                  reactions: true,
+                  notifications: true,
+                },
+                orderBy: {
+                  createdAt: 'desc',
+                },
+              },
+              notifications: true,
+            },
+            orderBy: {
+              createdAt: 'desc',
+            },
+          },
+          notifications: true,
         },
       });
-
-      const comments = postWithComments?.comments || [];
-      return comments;
+      return { message: 'success', data: singlePost };
     } catch (error) {
       return error;
     }
@@ -111,18 +191,59 @@ export class CommentsService {
       });
 
       // return all comments of that posts
-      const postWithComments = await this.prisma.post.findUnique({
-        where: { id: +postId },
+      const singlePost = await this.prisma.post.findUnique({
+        where: {
+          id: +postId,
+        },
         include: {
-          comments: {
-            include: {
-              replies: true,
+          images: true,
+          author: {
+            select: {
+              id: true,
+              username: true,
+              email: true,
+              name: true,
             },
           },
+          reactions: true,
+          comments: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  email: true,
+                  name: true,
+                },
+              },
+              reactions: true,
+              replies: {
+                include: {
+                  user: {
+                    select: {
+                      id: true,
+                      username: true,
+                      email: true,
+                      name: true,
+                    },
+                  },
+                  reactions: true,
+                  notifications: true,
+                },
+                orderBy: {
+                  createdAt: 'desc',
+                },
+              },
+              notifications: true,
+            },
+            orderBy: {
+              createdAt: 'desc',
+            },
+          },
+          notifications: true,
         },
       });
-      const comments = postWithComments?.comments || [];
-      return { message: 'Delete successfully', data: comments };
+      return { message: 'Delete successfully', data: singlePost };
     } catch (error) {
       return error;
     }

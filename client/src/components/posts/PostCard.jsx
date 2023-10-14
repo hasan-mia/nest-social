@@ -10,8 +10,8 @@ export default function PostCard({title, images}) {
       {
         images?.length > 0 ? (
            images?.map(image=>(
-            <div className="w-full">
-              <img alt="name" src={image} className="w-full" />
+            <div className="w-full" key={Math.random()}>
+              <img alt="name" src={image.imageUrl} className="w-full" />
           </div>
            ))
         ): null

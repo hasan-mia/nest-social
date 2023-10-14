@@ -43,12 +43,11 @@ const PostEditor = () => {
       formData.append("userId", userInfo.id);
       formData.append("content", content);
       const res = await postApi.createPost(formData);
-      console.log(res);
       if (res.status === 201) {
-          closeModal()
           setImages([]);
           setContent('');
-          dispatch(postApi.getAllPost(`${url.getAllPost}?limit=5`));
+          dispatch(postApi.getAllPost(`${url.getAllPost}?limit=2`));
+          closeModal()
       }
       if (res.status === 400) {
         setContent('');

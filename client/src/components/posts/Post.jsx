@@ -1,35 +1,47 @@
 import moment from "moment";
-import React from "react";
+import React, { useState } from "react";
 import { BiWorld } from "react-icons/bi";
 import { BsThreeDots } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import userImag from "../../../src/assets/userImg.png";
-import Reaction from "../reaction/Reaction";
-import ReactionBtn from "../reaction/ReactionBtn";
 import PostCard from "./PostCard";
 import CommentInput from "./comments/CommentInput";
+import Comments from "./comments/Comments";
+import Reaction from "./reaction/Reaction";
+import ReactionBtn from "./reaction/ReactionBtn";
 
-const Post = ({post}) => {
-  console.log(post);
+const Post = ({ post }) => {
+  const [showComment, setShowCmment] = useState(false);
+  const togleComment = () => setShowCmment(!showComment);
   return (
     <div className="flex flex-col flex-start gap-2 bg-white pb-2 mb-4 border rounded-lg">
       <div className="flex justify-between items-start gap-1 px-2 py-2 w-full mb-2">
         {/* ==Profile== */}
         <div className="flex justify-center gap-x-2">
           <Link href="#">
-            <img alt="name" src={post?.author?.profileImage? post?.author?.profileImage : userImag} className="w-10 h-10 rounded-full" />
+            <img
+              alt="name"
+              src={
+                post?.author?.profileImage
+                  ? post?.author?.profileImage
+                  : userImag
+              }
+              className="w-10 h-10 rounded-full"
+            />
           </Link>
           <div className="flex flex-col">
-            <p>{post?.author?.name? post?.author?.name : post?.author?.email}</p>
+            <p>
+              {post?.author?.name ? post?.author?.name : post?.author?.email}
+            </p>
             <p className="flex items-center gap-2 text-gray-700 text-sm">
-              <span>{moment(post?.timestamp).fromNow()}</span>
+              <span>{moment(post?.createdAt).fromNow()}</span>
               <span>
                 <BiWorld />
               </span>
             </p>
           </div>
         </div>
-        {/* Dropdown menu */}
+        {/* Dropdown menu of post edit / delete */}
         <div className="dropdown dropdown-end px-2">
           <label tabindex="0" className="rounded-full">
             <div className="text-md lg:text-2xl cursor-pointer px-2">
@@ -38,10 +50,14 @@ const Post = ({post}) => {
           </label>
           <ul
             tabindex="0"
-            className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
+            className="px-2  shadow menu menu-compact dropdown-content bg-base-100 w-28"
           >
-            <li>Edit</li>
-            <li>Delete</li>
+            <li>
+              <button>Edit</button>
+            </li>
+            <li>
+              <button>Delete</button>
+            </li>
           </ul>
         </div>
       </div>
@@ -49,97 +65,26 @@ const Post = ({post}) => {
       {/* Post Content */}
       <div className="post-content">
         {/* Post card */}
-        <PostCard title={post.content} images={post.images}/>
-
+        <PostCard title={post.content} images={post.images} />
         <div className="comment px-4 py-2">
-          {/* Show Like/Comment */}
+          {/* Show Like/Comment/share */}
           <div className="flex justify-between">
-            <Reaction/>
+            <Reaction reactions={post.reactions} commentNumber={post?.comments?.length}/>
           </div>
-
-          {/* Show Like/Comment */}
+          {/*  Like/Comment/share button */}
           <div className="flex justify-center items-center border-y py-2 mt-2">
-            <ReactionBtn/>
+            <ReactionBtn
+              post={post}
+              postId={post.id}
+              togleComment={togleComment}
+            />
           </div>
-
           {/* Post Comment Option */}
-          <CommentInput/>
-
+          {showComment && <CommentInput postId={post.id} />}
           {/* All Comment */}
-          <nav className="flex flex-col bg-transparent gap-2">
-            <ul>
-              <li>
-                <div className="flex gap-2 items-start">
-                  <div className="avatar">
-                    <div className="w-10 rounded-full">
-                      <img src={userImag} alt="avatar" />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 gap-1">
-                    <div className="flex flex-col bg-gray-100 pt-1 pb-2 px-4 rounded-2xl">
-                      <p className="font-semibold text-sm">Sarah Doe</p>
-                      <p className="flex items-center gap-2 text-gray-700 text-sm">
-                        <span>
-                          Illo eveniet velit consequatur quae fugit? Autem,
-                          temporibus. Sunt.
-                        </span>
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        className="py-1 px-2 text-gray-800 rounded-md text-sm"
-                      >
-                        Like
-                      </button>
-                      <button
-                        type="button"
-                        className="py-1 px-2 text-gray-800 rounded-md text-sm"
-                      >
-                        Reply
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <ul>
-                  <li className="ml-5">
-                    <div className="flex gap-2 items-start">
-                      <div className="avatar">
-                        <div className="w-8 rounded-full">
-                          <img src={userImag} alt="avatar" />
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-1 gap-1">
-                        <div className="flex flex-col bg-gray-100 pt-1 pb-2 px-4 rounded-2xl">
-                          <p className="font-semibold text-sm">Sarah Doe</p>
-                          <p className="flex items-center gap-2 text-gray-700 text-sm">
-                            <span>
-                              Illo eveniet velit consequatur quae fugit? Autem,
-                              temporibus. Sunt.
-                            </span>
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            className="py-1 px-2 text-gray-800 rounded-md text-sm"
-                          >
-                            Like
-                          </button>
-                          <button
-                            type="button"
-                            className="py-1 px-2 text-gray-800 rounded-md text-sm"
-                          >
-                            Reply
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </nav>
+          {showComment && post?.comments?.length > 0 && (
+            <Comments postId={post?.id} comments={post?.comments} />
+          )}
         </div>
       </div>
     </div>

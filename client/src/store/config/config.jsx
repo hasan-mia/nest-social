@@ -3,20 +3,23 @@ import Cookies from "js-cookie";
 const config = {};
 config.baseUrl = process.env.REACT_APP_BASE_URL;
 config.accesstoken = Cookies.get('token');
-
 config.simpleHeader = {
     headers: {
         'Content-type': 'application/json',
         'Access-Control-Allow-Origin': '*',
     },
 };
-config.basicHeader = {
-    headers: {
-        'Content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-         'Authorization': `Bearer ${config.accesstoken}`,
-    },
+
+config.basicHeader = (token) => {
+    const header = {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    };
+    return header;
 };
+
 config.paramsWithHeader = (param) => {
     const params = {
         params: param,
@@ -26,13 +29,6 @@ config.paramsWithHeader = (param) => {
         },
     };
     return params;
-};
-
-config.fileHeader = () => {
-    const headers = {
-        
-    };
-    return headers;
 };
 
 config.fileHeader = (token) => {

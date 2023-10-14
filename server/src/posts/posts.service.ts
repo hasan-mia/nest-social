@@ -201,6 +201,7 @@ export class PostsService {
                 id: true,
                 username: true,
                 email: true,
+                name: true,
               },
             },
             reactions: true,
@@ -211,6 +212,7 @@ export class PostsService {
                     id: true,
                     username: true,
                     email: true,
+                    name: true,
                   },
                 },
                 reactions: true,
@@ -221,20 +223,27 @@ export class PostsService {
                         id: true,
                         username: true,
                         email: true,
+                        name: true,
                       },
                     },
                     reactions: true,
                     notifications: true,
                   },
+                  orderBy: {
+                    createdAt: 'desc',
+                  },
                 },
                 notifications: true,
+              },
+              orderBy: {
+                createdAt: 'desc',
               },
             },
             notifications: true,
           },
-          // orderBy: {
-          //   createdAt: 'desc',
-          // },
+          orderBy: {
+            createdAt: 'desc',
+          },
         }),
         this.prisma.post.count(),
       ]);
@@ -243,7 +252,7 @@ export class PostsService {
       const nextPage = currentPage + 1;
       const nextPageUrl =
         currentPage < totalPages
-          ? `${domain}/post/all?page=${currentPage + 1}&limit=${perPage}`
+          ? `${domain}/post/all?page=${nextPage}&limit=${perPage}`
           : null;
       return {
         message: 'posts found',
@@ -263,8 +272,10 @@ export class PostsService {
   // ========single post=========
   async getPost(id: number) {
     try {
-      const post = await this.prisma.post.findFirst({
-        where: { id: +id },
+      const singlePost = await this.prisma.post.findUnique({
+        where: {
+          id: id,
+        },
         include: {
           images: true,
           author: {
@@ -272,6 +283,7 @@ export class PostsService {
               id: true,
               username: true,
               email: true,
+              name: true,
             },
           },
           reactions: true,
@@ -282,6 +294,7 @@ export class PostsService {
                   id: true,
                   username: true,
                   email: true,
+                  name: true,
                 },
               },
               reactions: true,
@@ -292,23 +305,26 @@ export class PostsService {
                       id: true,
                       username: true,
                       email: true,
+                      name: true,
                     },
                   },
                   reactions: true,
                   notifications: true,
                 },
+                orderBy: {
+                  createdAt: 'desc',
+                },
               },
               notifications: true,
+            },
+            orderBy: {
+              createdAt: 'desc',
             },
           },
           notifications: true,
         },
       });
-
-      return {
-        message: 'post found',
-        data: post,
-      };
+      return { message: 'success', data: singlePost };
     } catch (error) {
       return { message: 'Internal server error', error };
     }

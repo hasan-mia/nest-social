@@ -44,7 +44,7 @@ authApi.updatePass = async (data) => {
 
 // single user information
 authApi.userInfo = createAsyncThunk(`${name}userInfo`, async () => {
-    const res = await axios.get(url.userInfo, config.basicHeader);
+    const res = await axios.get(url.userInfo, config.basicHeader(config.accesstoken));
     return res;
 });
 

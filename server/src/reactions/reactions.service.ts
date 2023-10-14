@@ -46,39 +46,13 @@ export class ReactionsService {
         });
       }
       // return all reaction of that posts
-      return this.prisma.post.findUnique({
+      const reactionPost = await this.prisma.post.findUnique({
         where: { id: postId },
         include: {
           reactions: true,
-          comments: {
-            include: {
-              user: {
-                select: {
-                  id: true,
-                  username: true,
-                  email: true,
-                },
-              },
-              reactions: true,
-              replies: {
-                include: {
-                  user: {
-                    select: {
-                      id: true,
-                      username: true,
-                      email: true,
-                    },
-                  },
-                  reactions: true,
-                  notifications: true,
-                },
-              },
-              notifications: true,
-            },
-          },
-          notifications: true,
         },
       });
+      return reactionPost.reactions || [];
     } catch (error) {
       return error;
     }
@@ -88,7 +62,7 @@ export class ReactionsService {
   async commentReaction(dto: ReactionDto) {
     const { postId, commentId, userId, reactionType } = dto;
     try {
-      const comment = await this.prisma.comment.findFirst({
+      const comment = await this.prisma.comment.findUnique({
         where: {
           postId: postId,
           id: commentId,
@@ -121,39 +95,10 @@ export class ReactionsService {
         });
       }
       // return all reaction of that posts
-      return this.prisma.post.findUnique({
-        where: { id: postId },
-        include: {
-          reactions: true,
-          comments: {
-            include: {
-              user: {
-                select: {
-                  id: true,
-                  username: true,
-                  email: true,
-                },
-              },
-              reactions: true,
-              replies: {
-                include: {
-                  user: {
-                    select: {
-                      id: true,
-                      username: true,
-                      email: true,
-                    },
-                  },
-                  reactions: true,
-                  notifications: true,
-                },
-              },
-              notifications: true,
-            },
-          },
-          notifications: true,
-        },
+      const reactions = await this.prisma.reaction.findMany({
+        where: { postId: postId, commentId: commentId },
       });
+      return reactions;
     } catch (error) {
       return error;
     }
@@ -163,23 +108,16 @@ export class ReactionsService {
   async replyReaction(dto: ReactionDto) {
     const { postId, commentId, userId, replyId, reactionType } = dto;
     try {
-      const comment = await this.prisma.comment.findFirst({
-        where: {
-          postId: postId,
-          id: commentId,
-        },
+      const replyWithReactions = await this.prisma.reply.findUnique({
+        where: { id: replyId },
       });
-      if (!comment) {
-        throw new NotFoundException(`Post with ID ${commentId} not found`);
+
+      if (!replyWithReactions) {
+        throw new NotFoundException(`Reply with ID ${replyId} not found`);
       }
       // Assuming the user can only react once
       const existingReaction = await this.prisma.reaction.findFirst({
-        where: {
-          userId: +userId,
-          postId: +postId,
-          commentId: +commentId,
-          replyId: +replyId,
-        },
+        where: { userId: +userId, postId: +postId, replyId: +replyId },
       });
       if (existingReaction) {
         // If the user has already reacted, update the existing reaction
@@ -201,40 +139,11 @@ export class ReactionsService {
           },
         });
       }
-      // return all reaction of that posts
-      return this.prisma.post.findUnique({
-        where: { id: postId },
-        include: {
-          reactions: true,
-          comments: {
-            include: {
-              user: {
-                select: {
-                  id: true,
-                  username: true,
-                  email: true,
-                },
-              },
-              reactions: true,
-              replies: {
-                include: {
-                  user: {
-                    select: {
-                      id: true,
-                      username: true,
-                      email: true,
-                    },
-                  },
-                  reactions: true,
-                  notifications: true,
-                },
-              },
-              notifications: true,
-            },
-          },
-          notifications: true,
-        },
+      // return all reaction of that reply
+      const reactions = await this.prisma.reaction.findMany({
+        where: { postId: postId, replyId: replyId },
       });
+      return reactions;
     } catch (error) {
       return error;
     }

@@ -6,30 +6,31 @@ import { toast } from "react-toastify";
 import userImag from "../../../../src/assets/userImg.png";
 import postApi from "../../../store/api/postApi";
 import { updateComment } from "../../../store/slice/postSlice";
-export default function CommentInput({postId}) {
-  const {userInfo}=useSelector(state=>state.auth)
-  const dispatch =useDispatch();
+
+export default function ReplytInput({ commentId, postId }) {
+  const { userInfo } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const [content, setContent] = useState("");
   const data = {
     postId: +postId,
     userId: +userInfo.id,
-    content: content
-  }
-  const submitComment = async (e) => {
+    content: content,
+    commentId: +commentId,
+  };
+  const submitReply = async (e) => {
     e.preventDefault();
     if (userInfo) {
-      const res = await postApi.createComment(data);
+      const res = await postApi.createReply(data);
       if (res.status === 201) {
         dispatch(updateComment({ postId, data: res.data.data.comments }));
-        setContent('');
+        setContent("");
       }
       if (res.status === 400) {
-        setContent('');
+        setContent("");
       }
-    }else{
-      toast.info("Please login")
+    } else {
+      toast.info("Please login");
     }
-    
   };
   return (
     <div className="flex items-center gap-1px-2 py-2 w-full mt-2">
@@ -40,7 +41,7 @@ export default function CommentInput({postId}) {
           </div>
         </div>
       </Link>
-      <form className="flex w-full px-2" onSubmit={submitComment}>
+      <form className="flex w-full px-2" onSubmit={submitReply}>
         <input
           type="text"
           value={content}
@@ -48,7 +49,9 @@ export default function CommentInput({postId}) {
           className="py-3 px-2 bg-gray-100 w-full rounded-2xl active:border-none active:shadow-none outline-none"
           onChange={(e) => setContent(e.target.value)}
         />
-        <button type="submit" className="hover:text-blue-600"><BiPaperPlane size={28}/></button>
+        <button type="submit" className="hover:text-blue-600">
+          <BiPaperPlane size={28} />
+        </button>
       </form>
     </div>
   );

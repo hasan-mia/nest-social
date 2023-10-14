@@ -1,11 +1,13 @@
 import Cookies from "js-cookie";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import useToken from "../../hooks/useToken";
 import authApi from "../../store/api/authApi";
 
 export default function Signin({ handleSwitch }) {
+  const dispatch = useDispatch()
   const { setToken } = useToken();
   const [active, setActive] = useState(false);
   const [type, setType] = useState("password");
@@ -33,6 +35,8 @@ export default function Signin({ handleSwitch }) {
       Cookies.set("token", res.data.token, { expires: 30 });
       setToken(res.data.token);
       setLoading(false);
+      dispatch(authApi.userInfo())
+      window.location.reload();
     } else if (res.data.statusCode === 400) {
       toast.error(`${res.data.message}`);
       setLoading(false);
