@@ -1,16 +1,6 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  Length,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 
 export class ResetDto {
-  @IsNotEmpty()
-  @IsNumber()
-  public id: number;
-
   @IsNotEmpty()
   @IsString()
   @IsEmail()

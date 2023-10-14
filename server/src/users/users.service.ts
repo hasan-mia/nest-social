@@ -13,7 +13,7 @@ import { UpdateUserDto } from './dto/updateuser.dto';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  //========= get user by id ==========//
+  //========= get user info by token ==========//
   async getUser(req: Request) {
     const decodedUserInfo = (req as any).user;
     const foundUser = await this.prisma.user.findUnique({

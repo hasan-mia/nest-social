@@ -38,7 +38,6 @@ export class AuthController {
     return this.authService.resetToken(dto, req, res);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Put('reset/password')
   resetPass(@Body() dto: ResetDto, @Request() req, @Response() res) {
     return this.authService.resetPass(dto, req, res);

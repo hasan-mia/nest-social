@@ -29,13 +29,12 @@ export default function PostModal({
             onChange={(e) => setContent(e.target.value)}
           />
           <div className="flex flex-col md:flex-row justify-between mt-1 gap-y-2 md:gap-0">
-            <input
-              type="file"
+            <input type="file"
               multiple
               onChange={handleImage}
-              className="border-0 md:block active:border-none active:shadow-none outline-none"
-            />
-            <div className="flex flex-col md:flex-grow">
+              className="file-input file-input-bordered file-input-primary w-6/12 max-w-xs md-0 lg:mb-5" />
+
+            <div className="flex md:flex-row">
               {previewUrls.map((url) => (
                 <img
                   key={Math.random()}
@@ -46,7 +45,7 @@ export default function PostModal({
                     height: "50px",
                     objectFit: "contain",
                     margin: "2px",
-                    border: "1px solid rgb(228 228 228)",
+                    border: "2px solid rgb(228 228 228)",
                     borderRadius: "5px",
                     overflow: "hidden",
                   }}
@@ -57,7 +56,7 @@ export default function PostModal({
             <div className="md:pl-3">
               <button
                 type="button"
-                className="py-2 px-4 text-white bg-blue-500 rounded-md border fw-semibold"
+                className="py-3 px-4 text-white bg-primary rounded-md border fw-semibold"
                 onClick={handlePublishPost}
               >
                 Publish

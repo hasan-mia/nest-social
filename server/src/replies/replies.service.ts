@@ -66,9 +66,6 @@ export class RepliesService {
                   reactions: true,
                   notifications: true,
                 },
-                orderBy: {
-                  createdAt: 'desc',
-                },
               },
               notifications: true,
             },

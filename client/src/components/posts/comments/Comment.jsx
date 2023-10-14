@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import userImag from "../../../../src/assets/userImg.png";
 import Replies from "./Replies";
 import CommentReaction from "./commentreaction/CommentReaction";
-export default function Comments({ postId, comment }) {
+export default function Comments({ postId, authorId, comment }) {
   const [show, setShwo] = useState(false);
   const showReplyHandler = () => {
     setShwo(!show);
@@ -40,6 +40,7 @@ export default function Comments({ postId, comment }) {
         replies={comment.replies}
         commentId={comment.id}
         postId={postId}
+        authorId={authorId}
         show={show}
         setShwo={setShwo}
       />

@@ -48,9 +48,62 @@ export class PostsService {
         },
       });
 
+      const allPosts = await this.prisma.post.findMany({
+        include: {
+          images: true,
+          author: {
+            select: {
+              id: true,
+              username: true,
+              email: true,
+              name: true,
+            },
+          },
+          reactions: true,
+          comments: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  email: true,
+                  name: true,
+                },
+              },
+              reactions: true,
+              replies: {
+                include: {
+                  user: {
+                    select: {
+                      id: true,
+                      username: true,
+                      email: true,
+                      name: true,
+                    },
+                  },
+                  reactions: true,
+                  notifications: true,
+                },
+                orderBy: {
+                  createdAt: 'desc',
+                },
+              },
+              notifications: true,
+            },
+            orderBy: {
+              createdAt: 'desc',
+            },
+          },
+          notifications: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
       return res.status(201).json({
         message: 'Post created successfully',
-        data: createdPost,
+        data: allPosts,
       });
     } catch (error) {
       return res.status(500).json({ message: 'Internal server error', error });

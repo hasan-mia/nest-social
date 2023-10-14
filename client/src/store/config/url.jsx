@@ -38,8 +38,8 @@ url.replytReaction = `${config.baseUrl}reaction/reply`; // [post]
 
 // Notification api
 url.createNotification = `${config.baseUrl}notification/create`; // [post]
-url.getNotification = `${config.baseUrl}notification`; //  [get] params with id
-url.createNotification = `${config.baseUrl}notification/read`; // [put]
+url.readNotification = `${config.baseUrl}notification/read`; // [put]
+url.getNotification = `${config.baseUrl}notification/get`; //  [get] params with id
 
 
 export default url;

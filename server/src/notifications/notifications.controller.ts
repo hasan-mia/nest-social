@@ -6,6 +6,8 @@ import {
   Post,
   Put,
   Req,
+  Request,
+  Response,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
@@ -16,17 +18,21 @@ import { NotificationsService } from './notifications.service';
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
   //========= create notification ==========//
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post('create')
-  createNotification(@Body() dto: NotificationDto) {
-    return this.notificationsService.createNotification(dto);
+  createNotification(
+    @Body() dto: NotificationDto,
+    @Request() req,
+    @Response() res,
+  ) {
+    return this.notificationsService.createNotification(dto, req, res);
   }
 
   //========= get user notification ==========//
   @UseGuards(JwtAuthGuard)
-  @Get(':userId')
-  async getNotification(@Param('userId') userId: number, @Req() req) {
-    return this.notificationsService.getNotification(userId, req);
+  @Get('get')
+  async getNotification(@Req() req) {
+    return this.notificationsService.getNotification(req);
   }
 
   //========= read notification ==========//

@@ -8,20 +8,20 @@ import postApi from "../store/api/postApi";
 import url from "../store/config/url";
 
 const Home = () => {
-  const { posts, isLoading, nextPageUrl } = useSelector((state) => state.post);
+  const { posts, isLoading, scrollLoading, nextPageUrl } = useSelector((state) => state.post);
   const dispatch = useDispatch();
   // scroll handling
   const getScrollPosition = useCallback(() => {
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
     if (scrollTop + clientHeight + 100 >= scrollHeight && nextPageUrl) {
-      dispatch(postApi.getAllPost(`${nextPageUrl}`));
+      dispatch(postApi.getAllScrollPost(`${nextPageUrl}`));
     }
   }, [nextPageUrl, dispatch]);
 
   useEffect(() => {
     window.addEventListener("scroll", getScrollPosition);
-    if (posts.length <= 0) {
-      dispatch(postApi.getAllPost(`${url.getAllPost}?limit=2`));
+    if (posts.length === 0) {
+      dispatch(postApi.getAllScrollPost(`${url.getAllPost}?limit=2`));
     }
     return () => {
       window.removeEventListener("scroll", getScrollPosition);
@@ -39,8 +39,8 @@ const Home = () => {
           <div className="py-2 my-4 rounded-xl">
             {posts.length > 0 && posts.map(post=><Post post={post} />) }
           </div>
-          {isLoading && posts?.length <= 0 && nextPageUrl && <PostLoader />}
-          {isLoading && posts?.length > 0 && nextPageUrl && <Loading />}
+          {isLoading && posts?.length === 0 && nextPageUrl && <PostLoader />}
+          {scrollLoading && posts?.length > 0 && nextPageUrl && <Loading />}
         </div>
         <div className="w-full md:w-4/12"></div>
       </div>

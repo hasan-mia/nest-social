@@ -36,7 +36,7 @@ authApi.signinOut = async (data) => {
 // update password
 authApi.updatePass = async (data) => {
     const res = await axios
-        .post(url.signinOut, data, config.simpleHeader)
+        .put(url.updatePass, data, config.basicHeader(config.accesstoken))
         .then((response) => response)
         .catch((err) => err.response);
     return res;

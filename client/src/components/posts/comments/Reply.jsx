@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import userImag from "../../../../src/assets/userImg.png";
+import ReplytInput from "./ReplytInput";
 import ReplyReaction from "./replyreaction/ReplyReaction";
-export default function Reply({postId, commentId, reply}) {
+export default function Reply({postId, commentId, authorId, reply}) {
+  const [showReply, setShowReply] = useState(false);
   return (
+    <>
     <li className="ml-5">
       <div className="flex gap-2 items-start">
         <div className="avatar">
@@ -24,6 +27,7 @@ export default function Reply({postId, commentId, reply}) {
             <button
               type="button"
               className="py-1 px-2 text-gray-800 rounded-md text-sm"
+              onClick={()=>setShowReply(!showReply)}
             >
               Reply
             </button>
@@ -31,5 +35,7 @@ export default function Reply({postId, commentId, reply}) {
         </div>
       </div>
     </li>
+    <li>{showReply && <ReplytInput authorId={authorId} postId={postId} commentId={commentId} replyId={reply.id}/>}</li>
+    </>
   );
 }

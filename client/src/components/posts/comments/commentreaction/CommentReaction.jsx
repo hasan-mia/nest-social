@@ -28,7 +28,6 @@ export default function CommentReaction({ comment, postId, commentId }) {
         const res = await reactionApi.commentReaction(data);
         if (res.status === 201) {
           dispatch(addCommetReaction({ postId, commentId, data: res.data }));
-          toast.success("success");
         }
       } catch (error) {
         console.error(error);

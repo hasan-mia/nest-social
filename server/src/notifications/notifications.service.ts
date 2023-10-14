@@ -1,5 +1,6 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { Response } from 'express';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { PrismaService } from 'prisma/prisma.service';
 import { NotificationDto } from './dto/notification.dto';
 
@@ -8,31 +9,56 @@ export class NotificationsService {
   constructor(private readonly prisma: PrismaService) {}
 
   //========= create notification ==========//
-  async createNotification(dto: NotificationDto) {
-    const { notificationType, userId, postId, commentId, replyId, isRead } =
+  async createNotification(dto: NotificationDto, req: Request, res: Response) {
+    const { notificationType, postId, userId, commentId, replyId, isRead } =
       dto;
+    const decodedUserInfo = (req as any).user;
+    const foundUser = await this.prisma.user.findUnique({
+      where: { id: +decodedUserInfo.id },
+    });
+
+    if (!foundUser) {
+      throw new NotFoundException('user not found');
+    }
+    const foundPost = await this.prisma.post.findUnique({
+      where: { id: +postId },
+    });
+
+    if (!foundPost) {
+      throw new NotFoundException('post not found');
+    }
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const notifications = await this.prisma.notification.create({
-        data: { notificationType, userId, postId, commentId, replyId, isRead },
+      await this.prisma.notification.create({
+        data: {
+          notificationType,
+          userId: +userId,
+          postId,
+          commentId,
+          replyId,
+          isRead,
+        },
       });
-      return notifications;
+      return res.send({ message: 'success' });
     } catch (error) {
       return error;
     }
   }
 
   //========= get user notification ==========//
-  async getNotification(userId: number, req: Response) {
+  async getNotification(req: Response) {
     const decodedUserInfo = (req as any).user;
-    if (+userId !== +decodedUserInfo.id) {
-      throw new ForbiddenException('you can access only your notification');
+    const foundUser = await this.prisma.user.findUnique({
+      where: { id: +decodedUserInfo.id },
+    });
+
+    if (!foundUser) {
+      throw new NotFoundException('user not found');
     }
     try {
       const userNotification = await this.prisma.notification.findMany({
         where: {
-          userId: +userId,
+          userId: +decodedUserInfo.id,
         },
         orderBy: {
           createdAt: 'desc',

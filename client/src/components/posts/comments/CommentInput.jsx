@@ -4,9 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import userImag from "../../../../src/assets/userImg.png";
+import notificationApi from "../../../store/api/notificationApi";
 import postApi from "../../../store/api/postApi";
 import { updateComment } from "../../../store/slice/postSlice";
-export default function CommentInput({postId}) {
+export default function CommentInput({postId, authorId}) {
   const {userInfo}=useSelector(state=>state.auth)
   const dispatch =useDispatch();
   const [content, setContent] = useState("");
@@ -15,17 +16,31 @@ export default function CommentInput({postId}) {
     userId: +userInfo.id,
     content: content
   }
+  const notification = {
+    notificationType: "new_comment",
+    postId : +postId,
+    userId: +authorId,
+    commentId: null,
+    replyId: null,
+    isRead:false,
+  }
+
   const submitComment = async (e) => {
     e.preventDefault();
     if (userInfo) {
+     try {
       const res = await postApi.createComment(data);
       if (res.status === 201) {
         dispatch(updateComment({ postId, data: res.data.data.comments }));
         setContent('');
+        await notificationApi.createNotification(notification);
       }
       if (res.status === 400) {
         setContent('');
       }
+    } catch (error) {
+      console.error(error);
+    }
     }else{
       toast.info("Please login")
     }

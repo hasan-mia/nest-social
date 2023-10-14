@@ -77,13 +77,14 @@ const Post = ({ post }) => {
               post={post}
               postId={post.id}
               togleComment={togleComment}
+              authorId={post.author.id}
             />
           </div>
           {/* Post Comment Option */}
-          {showComment && <CommentInput postId={post.id} />}
+          {showComment && <CommentInput postId={post.id} authorId={post.author.id}/>}
           {/* All Comment */}
           {showComment && post?.comments?.length > 0 && (
-            <Comments postId={post?.id} comments={post?.comments} />
+            <Comments postId={post?.id} comments={post?.comments} authorId={post.author.id}/>
           )}
         </div>
       </div>

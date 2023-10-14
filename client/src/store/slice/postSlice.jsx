@@ -12,6 +12,8 @@ const postSlice = createSlice({
     currentPage: 0,
     nextPageUrl: null,
     nextPage: 0,
+    scrollLoading: false,
+    scrollError: false,
     // single post
     post: null,
   },
@@ -97,6 +99,27 @@ const postSlice = createSlice({
       state.nextPage = data.nextPage;
       state.nextPageUrl = data.nextPageUrl;
       state.isLoading = true;
+      state.posts = data.data;
+    });
+
+    builder.addCase(postApi.getAllPost.rejected, (state) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.nextPage = null;
+    });
+
+    // get all communities on scroll
+    builder.addCase(postApi.getAllScrollPost.pending, (state) => {
+      state.scrollLoading = true;
+      state.scrollError = false;
+    });
+    builder.addCase(postApi.getAllScrollPost.fulfilled, (state, action) => {
+      const { data } = action.payload;
+      state.perPage = data.perPage;
+      state.currentPage = data.currentPage;
+      state.nextPage = data.nextPage;
+      state.nextPageUrl = data.nextPageUrl;
+      state.isLoading = true;
       if (state.posts.length <= 0) {
         state.posts.push(...data.data);
       } else {
@@ -105,12 +128,11 @@ const postSlice = createSlice({
         );
         state.posts.push(...newData);
       }
-      state.isLoading = false;
+      state.scrollLoading = false;
     });
-
-    builder.addCase(postApi.getAllPost.rejected, (state) => {
-      state.isLoading = false;
-      state.isError = true;
+    builder.addCase(postApi.getAllScrollPost.rejected, (state) => {
+      state.scrollLoading = false;
+      state.scrollError = true;
       state.nextPage = null;
     });
 
@@ -132,6 +154,10 @@ const postSlice = createSlice({
   },
 });
 
-export const { addReaction, addCommetReaction, addReplyReaction, updateComment } =
-  postSlice.actions;
+export const {
+  addReaction,
+  addCommetReaction,
+  addReplyReaction,
+  updateComment,
+} = postSlice.actions;
 export default postSlice.reducer;

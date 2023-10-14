@@ -118,11 +118,11 @@ export class AuthService {
   //  Reset Pass  //
   //=================
   async resetPass(dto: ResetDto, req: Request, res: Response) {
-    const { password, email, id } = dto;
+    const { password, email } = dto;
     // generate hash password
     try {
       const userExists = await this.prisma.user.findUnique({
-        where: { email, id: +id },
+        where: { email },
       });
       if (userExists) {
         const updatePassword = await this.hashPassword(password);
